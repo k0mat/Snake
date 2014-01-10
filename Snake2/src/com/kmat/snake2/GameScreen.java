@@ -181,20 +181,24 @@ public class GameScreen implements Screen {
 		
 		LabelStyle labelStyle = new LabelStyle(snakeGame.menuScreen.getBitmapFont40(), Color.WHITE);
 		
+		
+
+		
 		highscoreLabel = new Label("HIGHSCORE: " + highscore, labelStyle);
-		
 		scoreLabel = new Label("SCORE: ", labelStyle);
-		scoreLabel.setPosition(Gdx.graphics.getWidth() / 2 - 100, Gdx.graphics.getHeight() - 58);
-		
 		multiplierLabel = new Label("MULTIPLIER: ", labelStyle);
-		multiplierLabel.setPosition(Gdx.graphics.getWidth() * 3 / 4 - 100, Gdx.graphics.getHeight() - 58);
-		
-		
 		lengthLabel = new Label("LENGTH: ", labelStyle);
-		lengthLabel.setPosition(Gdx.graphics.getWidth() / 4 - 100, Gdx.graphics.getHeight() - 58);
-		
 		optionsButton = new Button(style);
-		optionsButton.setPosition(Gdx.graphics.getWidth() - 96, Gdx.graphics.getHeight() - 96);
+		
+		int tempX = Gdx.graphics.getWidth() / 8,
+			tempY= Gdx.graphics.getHeight();
+		
+		optionsButton.setPosition(Gdx.graphics.getWidth() - 96, tempY - 96);
+		
+		lengthLabel.setPosition(tempX * 4, tempY - 58);
+		scoreLabel.setPosition(tempX * 2 + (tempX * 2 / 3), tempY - 58);
+		multiplierLabel.setPosition(tempX * 5 + tempX / 2, tempY - 58);
+		highscoreLabel.setPosition(tempX * 1, tempY - 58);
 		
 		optionsButton.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
@@ -378,13 +382,20 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		int tempX = width / 8;
+		
 		gameInputProcessor.setWidth(width);
 		gameInputProcessor.setHeight(height);
-		optionsButton.setPosition(width - 96, height - 96);
-		multiplierLabel.setPosition(width * 3 / 4 - 100, height - 58);
-		scoreLabel.setPosition(width / 2 - 100, height - 58);
-		lengthLabel.setPosition(width / 4 - 100, height - 58); 
 		stage.setViewport(width, height, true);
+		
+		optionsButton.setPosition(width - 96, height - 96);
+		
+		lengthLabel.setPosition(tempX * 4, height - 58);
+		scoreLabel.setPosition(tempX * 2 + (tempX * 2 / 3), height - 58);
+		multiplierLabel.setPosition(tempX * 5 + tempX / 2, height - 58);
+		highscoreLabel.setPosition(tempX * 1, height - 58);
+		
+		
 	}
 
 	@Override
