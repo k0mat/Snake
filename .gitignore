@@ -1,0 +1,21 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.apk
+*.dex
+
+# Logs and databases #
+######################
+*.log
+
+# misc #
+########
+*.cache
+Snake2/bin
+Snake2-android/bin
+Snake2-desktop/bin
