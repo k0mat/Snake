@@ -43,12 +43,10 @@ public class MenuScreen implements Screen {
 	}
 	
 	private void create()
-	{
-
-		
+	{	
 		stage = new Stage();
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/RobotoCondensed-Bold.ttf"));
-		bitmapButtonFont = generator.generateFont(80);
+		bitmapButtonFont = generator.generateFont(65);
 		bitmapFont40 = generator.generateFont(40);
 		ninePatch = new NinePatch(new Texture(Gdx.files.internal("data/test.png")), 4, 4, 4, 5);
 		patchDrawable = new NinePatchDrawable(ninePatch);
@@ -72,21 +70,51 @@ public class MenuScreen implements Screen {
 					}
 					
 				});
-		
-		final TextButton button = new TextButton("  START  ", buttonStyle);
-		button.setPosition(Gdx.graphics.getWidth() / 2 - button.getWidth() / 2, Gdx.graphics.getHeight() / 2 - button.getHeight() / 2);
-		button.addListener(new ClickListener() {
+			
+		final TextButton startButton = new TextButton("  START  ", buttonStyle);
+		startButton.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				snakeGame.setScreen(snakeGame.gameScreen);
 				snakeGame.gameScreen.reset(diffSlider.getValue(), 1.0f);
 			}
 		});
 		
+		final TextButton resumeButton = new TextButton("  RESUME  ", buttonStyle);
+		resumeButton.addListener(new ClickListener() {
+			public void clicked (InputEvent event, float x, float y) {
+				if(snakeGame.gameScreen.isInProgress())
+				{
+					snakeGame.setScreen(snakeGame.gameScreen);
+				}
+			}
+		});
+		
+		final TextButton scoresButton = new TextButton("  SCORES  ", buttonStyle);
+		scoresButton.addListener(new ClickListener() {
+			public void clicked (InputEvent event, float x, float y) {
+			}
+		});
+		
+		final TextButton optionsButton = new TextButton("  OPTIONS  ", buttonStyle);
+		optionsButton.addListener(new ClickListener() {
+			public void clicked (InputEvent event, float x, float y) {
+			}
+		});
+		
+		
+		resumeButton.setPosition(Gdx.graphics.getWidth() / 2 - resumeButton.getWidth() - 10, 50);
+		startButton.setPosition(resumeButton.getX() - startButton.getWidth() - 10, 50);
+		scoresButton.setPosition(resumeButton.getX() + resumeButton.getWidth() + 10, 50);
+		optionsButton.setPosition(scoresButton.getX() + scoresButton.getWidth() + 10, 50);
+		
 		diffLabel = new Label("Snake speed: " + diffSlider.getValue(), labelStyle);
 		diffLabel.setPosition(Gdx.graphics.getWidth() / 2 - diffLabel.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 120 + diffLabel.getHeight());
 		
 		stage.addActor(diffLabel);
-		stage.addActor(button);
+		stage.addActor(startButton);
+		stage.addActor(resumeButton);
+		stage.addActor(scoresButton);
+		stage.addActor(optionsButton);
 		stage.addActor(diffSlider);
 	}
 	
