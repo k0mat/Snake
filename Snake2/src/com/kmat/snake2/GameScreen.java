@@ -45,8 +45,8 @@ public class GameScreen implements Screen {
 	private float lastUpdate;
 	private float speed;
 	
-	public boolean inProgress;
-	public boolean isFocused;
+	private boolean inProgress;
+	private boolean isFocused;
 	
 	private int boardX;	//32
 	private int boardY;	//22

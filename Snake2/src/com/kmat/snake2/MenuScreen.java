@@ -34,7 +34,10 @@ public class MenuScreen implements Screen {
 	private NinePatchDrawable patchDrawable;
 	private Slider diffSlider;
 	private Label diffLabel;
-
+	private TextButton startButton;
+	private TextButton resumeButton;
+	private TextButton optionsButton;
+	private TextButton scoresButton;
 	
 	public MenuScreen(SnakeGame snakeGame)
 	{
@@ -51,6 +54,8 @@ public class MenuScreen implements Screen {
 		ninePatch = new NinePatch(new Texture(Gdx.files.internal("data/test.png")), 4, 4, 4, 5);
 		patchDrawable = new NinePatchDrawable(ninePatch);
 		buttonStyle = new TextButtonStyle(patchDrawable, patchDrawable, patchDrawable, bitmapButtonFont);
+		buttonStyle.fontColor = Color.WHITE;
+		buttonStyle.disabledFontColor = Color.GRAY;
 		
 		LabelStyle labelStyle = new LabelStyle(bitmapFont40, Color.WHITE);
 		
@@ -71,7 +76,7 @@ public class MenuScreen implements Screen {
 					
 				});
 			
-		final TextButton startButton = new TextButton("  START  ", buttonStyle);
+		startButton = new TextButton("  START  ", buttonStyle);
 		startButton.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				snakeGame.setScreen(snakeGame.gameScreen);
@@ -79,7 +84,7 @@ public class MenuScreen implements Screen {
 			}
 		});
 		
-		final TextButton resumeButton = new TextButton("  RESUME  ", buttonStyle);
+		resumeButton = new TextButton("  RESUME  ", buttonStyle);
 		resumeButton.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				if(snakeGame.gameScreen.isInProgress())
@@ -90,13 +95,13 @@ public class MenuScreen implements Screen {
 			}
 		});
 		
-		final TextButton scoresButton = new TextButton("  SCORES  ", buttonStyle);
+		scoresButton = new TextButton("  SCORES  ", buttonStyle);
 		scoresButton.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 			}
 		});
 		
-		final TextButton optionsButton = new TextButton("  OPTIONS  ", buttonStyle);
+		optionsButton = new TextButton("  OPTIONS  ", buttonStyle);
 		optionsButton.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 			}
@@ -107,6 +112,10 @@ public class MenuScreen implements Screen {
 		startButton.setPosition(resumeButton.getX() - startButton.getWidth() - 10, 50);
 		scoresButton.setPosition(resumeButton.getX() + resumeButton.getWidth() + 10, 50);
 		optionsButton.setPosition(scoresButton.getX() + scoresButton.getWidth() + 10, 50);
+		
+		scoresButton.setDisabled(true);
+		optionsButton.setDisabled(true);
+		resumeButton.setDisabled(true);
 		
 		diffLabel = new Label("Snake speed: " + diffSlider.getValue(), labelStyle);
 		diffLabel.setPosition(Gdx.graphics.getWidth() / 2 - diffLabel.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 120 + diffLabel.getHeight());
@@ -136,6 +145,14 @@ public class MenuScreen implements Screen {
 	@Override
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
+		if(snakeGame.gameScreen.isInProgress() == true)
+		{
+			resumeButton.setDisabled(false);
+		}
+		else
+		{
+			resumeButton.setDisabled(true);
+		}
 
 	}
 
