@@ -19,3 +19,4 @@
 Snake2/bin
 Snake2-android/bin
 Snake2-desktop/bin
+!Snake2-android/libs
