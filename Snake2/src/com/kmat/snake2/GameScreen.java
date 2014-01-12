@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,6 +32,8 @@ public class GameScreen implements Screen {
 	private InputMultiplexer inputMultiplexer;
 	private FrameBuffer frameBuffer;
 	private OrthographicCamera camera;
+	
+	private Sound scoreSound;
 	
 	private Texture snakeSegment;
 	private Texture apple;
@@ -171,6 +174,8 @@ public class GameScreen implements Screen {
 		apple.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		options  = new Texture(Gdx.files.internal("data/ic_action_settings.png"));
 		batch = new SpriteBatch();
+		
+		scoreSound = Gdx.audio.newSound(Gdx.files.internal("data/score.mp3"));
 		
 		random = new Random();
 		boardX = 30;
@@ -373,6 +378,7 @@ public class GameScreen implements Screen {
 			board[(int)tempFragment.x + i][(int)tempFragment.y + j] = 2;
 			snake.offerFirst(new Vector2((int)tempFragment.x + i, (int)tempFragment.y + j));
 			score++;
+			scoreSound.play(1.0f);
 			placeApple();
 			break;
 		}
@@ -435,7 +441,7 @@ public class GameScreen implements Screen {
 		wall.dispose();
 		options.dispose();
 		stage.dispose();
-		
+		scoreSound.dispose();
 	}
 
 	public boolean isInProgress() {
