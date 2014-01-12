@@ -48,6 +48,7 @@ public class GameScreen implements Screen {
 	private boolean inProgress;
 	private boolean isFocused;
 	
+	private int secondChance;
 	private int boardX;	//32
 	private int boardY;	//22
 	private byte board[][] = new byte[30][20];
@@ -84,6 +85,7 @@ public class GameScreen implements Screen {
 		this.snakeGame = snakeGame;
 		inProgress = false;
 		isFocused = true;
+		secondChance = 2;
 		create();
 		reset(7.0f, 1.0f);
 	}
@@ -98,15 +100,16 @@ public class GameScreen implements Screen {
 		elapsedTime = 0.0f;
 		lastUpdate = countDown;
 		this.speed = speed;
+		secondChance = 2;
 		boardX = 30;
 		boardY = 20;
-		fillBoard();
-		placeApple();
 		score = 0;
 		scoreMultiplier = speed / 20.0f * 4;
 		scoreLabel.setText("SCORE: " + (int)(score * scoreMultiplier));
 		lengthLabel.setText("LENGTH: " + (score + 3));
 		multiplierLabel.setText("MULTIPLIER: " + scoreMultiplier);
+		fillBoard();
+		placeApple();
 	}
 	
 	public void applyGracePeriod(float period)
@@ -233,6 +236,10 @@ public class GameScreen implements Screen {
 					if(inProgress == false)
 					{
 						inProgress = true;
+					}
+					if(this.secondChance < 2)
+					{
+						this.secondChance++;
 					}
 					lastUpdate += tickTime;
 					proceed();
@@ -366,12 +373,27 @@ public class GameScreen implements Screen {
 			
 			break;
 		case 1:
-			inProgress = false;
-			reset(speed, 1.0f);
+			
+			if(this.secondChance >= 2)
+			{
+				this.secondChance = 0;
+			}
+			else
+			{
+				inProgress = false;
+				reset(speed, 1.0f);
+			}
 			break;
 		case 2:
-			inProgress = false;
-			reset(speed, 1.0f);
+			if(this.secondChance >= 2)
+			{
+				this.secondChance = 0;
+			}
+			else
+			{
+				inProgress = false;
+				reset(speed, 1.0f);
+			}
 			break;
 		case 3:
 			tempFragment = snake.peekFirst();
