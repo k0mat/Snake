@@ -27,7 +27,7 @@ public class MenuScreen implements Screen {
 	private SnakeGame snakeGame;
 	private Stage stage;
 	private FreeTypeFontGenerator generator;
-	private BitmapFont bitmapFont50;
+	private BitmapFont bitmapButtonFont;
 	private BitmapFont bitmapFont40;
 	private TextButtonStyle buttonStyle;
 	private NinePatch ninePatch;
@@ -48,11 +48,11 @@ public class MenuScreen implements Screen {
 		
 		stage = new Stage();
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/RobotoCondensed-Bold.ttf"));
-		bitmapFont50 = generator.generateFont(80);
+		bitmapButtonFont = generator.generateFont(80);
 		bitmapFont40 = generator.generateFont(40);
 		ninePatch = new NinePatch(new Texture(Gdx.files.internal("data/test.png")), 4, 4, 4, 5);
 		patchDrawable = new NinePatchDrawable(ninePatch);
-		buttonStyle = new TextButtonStyle(patchDrawable, patchDrawable, patchDrawable, bitmapFont50);
+		buttonStyle = new TextButtonStyle(patchDrawable, patchDrawable, patchDrawable, bitmapButtonFont);
 		
 		LabelStyle labelStyle = new LabelStyle(bitmapFont40, Color.WHITE);
 		
@@ -136,7 +136,7 @@ public class MenuScreen implements Screen {
 	}
 
 	public BitmapFont getBitmapFont50() {
-		return bitmapFont50;
+		return bitmapButtonFont;
 	}
 	
 	public BitmapFont getBitmapFont40() {
