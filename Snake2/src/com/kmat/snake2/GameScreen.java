@@ -42,7 +42,7 @@ public class GameScreen implements Screen {
 	private float lastUpdate;
 	private float speed;
 	
-	public boolean active;
+	public boolean inProgress;
 	public boolean isFocused;
 	
 	private int boardX;	//32
@@ -79,7 +79,7 @@ public class GameScreen implements Screen {
 	public GameScreen(SnakeGame snakeGame)
 	{
 		this.snakeGame = snakeGame;
-		active = false;
+		inProgress = false;
 		isFocused = true;
 		create();
 		reset(7.0f, 1.0f);
@@ -92,7 +92,6 @@ public class GameScreen implements Screen {
 	}
 	
 	public void reset(float speed, float countDown) {
-		active = true;
 		elapsedTime = 0.0f;
 		lastUpdate = countDown;
 		this.speed = speed;
@@ -226,6 +225,10 @@ public class GameScreen implements Screen {
 			{
 				if(lastUpdate + tickTime <= elapsedTime)
 				{
+					if(inProgress == false)
+					{
+						inProgress = true;
+					}
 					lastUpdate += tickTime;
 					proceed();
 				}
@@ -358,11 +361,11 @@ public class GameScreen implements Screen {
 			
 			break;
 		case 1:
-			active = false;
+			inProgress = false;
 			reset(speed, 1.0f);
 			break;
 		case 2:
-			active = false;
+			inProgress = false;
 			reset(speed, 1.0f);
 			break;
 		case 3:
@@ -407,13 +410,10 @@ public class GameScreen implements Screen {
 	@Override
 	public void show() {
 		Gdx.input.setInputProcessor(inputMultiplexer);
-		active = false;
 	}
 
 	@Override
 	public void hide() {
-		active = true;
-
 	}
 
 	@Override
@@ -436,6 +436,10 @@ public class GameScreen implements Screen {
 		options.dispose();
 		stage.dispose();
 		
+	}
+
+	public boolean isInProgress() {
+		return inProgress;
 	}
 
 }
