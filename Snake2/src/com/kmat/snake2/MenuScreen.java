@@ -84,6 +84,7 @@ public class MenuScreen implements Screen {
 			public void clicked (InputEvent event, float x, float y) {
 				if(snakeGame.gameScreen.isInProgress())
 				{
+					snakeGame.gameScreen.applyGracePeriod(1.0f);
 					snakeGame.setScreen(snakeGame.gameScreen);
 				}
 			}
