@@ -43,6 +43,7 @@ public class GameScreen implements Screen {
 	private float speed;
 	
 	public boolean active;
+	public boolean isFocused;
 	
 	private int boardX;	//32
 	private int boardY;	//22
@@ -79,6 +80,7 @@ public class GameScreen implements Screen {
 	{
 		this.snakeGame = snakeGame;
 		active = false;
+		isFocused = true;
 		create();
 		reset(7.0f, 1.0f);
 	}
@@ -215,62 +217,66 @@ public class GameScreen implements Screen {
 	
 	@Override
 	public void render(float delta) {
-		float tickTime = 1 / speed;
-		elapsedTime += delta;
-		while(lastUpdate < elapsedTime)
+		delta = Math.min(delta, 0.17f);		//a bit higher than 1.0f/60.0f
+		if(this.isFocused == true)
 		{
-			if(lastUpdate + tickTime <= elapsedTime)
+			float tickTime = 1 / speed;
+			elapsedTime += delta;
+			while(lastUpdate < elapsedTime)
 			{
-				lastUpdate += tickTime;
-				proceed();
-			}
-			else
-			{
-				break;
-			}
-		}
-		stage.act(delta);
-		
-		batch.setProjectionMatrix(camera.combined);
-		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		frameBuffer.begin();
-		batch.begin();
-		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		int firstX = (int)((1280 / 32.0f - boardX) / 2 * 32);
-		int firstY = (int)((720 / 32.0f - boardY) / 2 * 32);
-		for(int i = 0; i < boardX; i++)
-		{
-			for(int j = 0; j < boardY; j++)
-			{
-				switch(board[i][j])
+				if(lastUpdate + tickTime <= elapsedTime)
 				{
-				case 1:
-					batch.draw(wall, firstX +  i * 32, firstY + (boardY - 1) * 32 - j * 32 + 25);
-					break;
-				case 2:
-					batch.draw(snakeSegment, firstX +  i * 32, firstY + (boardY - 1)  * 32 - j * 32 + 25);
-					break;
-				case 3:
-					batch.draw(apple, firstX + i * 32, firstY + (boardY - 1) * 32 -  j * 32 + 25);
-					break;
-				default:
+					lastUpdate += tickTime;
+					proceed();
+				}
+				else
+				{
 					break;
 				}
 			}
+			stage.act(delta);
+			
+			batch.setProjectionMatrix(camera.combined);
+			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+			frameBuffer.begin();
+			batch.begin();
+			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+			int firstX = (int)((1280 / 32.0f - boardX) / 2 * 32);
+			int firstY = (int)((720 / 32.0f - boardY) / 2 * 32);
+			for(int i = 0; i < boardX; i++)
+			{
+				for(int j = 0; j < boardY; j++)
+				{
+					switch(board[i][j])
+					{
+					case 1:
+						batch.draw(wall, firstX +  i * 32, firstY + (boardY - 1) * 32 - j * 32 + 25);
+						break;
+					case 2:
+						batch.draw(snakeSegment, firstX +  i * 32, firstY + (boardY - 1)  * 32 - j * 32 + 25);
+						break;
+					case 3:
+						batch.draw(apple, firstX + i * 32, firstY + (boardY - 1) * 32 -  j * 32 + 25);
+						break;
+					default:
+						break;
+					}
+				}
+			}
+			batch.end();
+			
+			frameBuffer.end();
+			
+			batch.begin();
+	
+			batch.draw(frameBuffer.getColorBufferTexture(), 0.0f, 0.0f);
+	
+			batch.end();
+	
+			stage.draw();
 		}
-		batch.end();
-		
-		frameBuffer.end();
-		
-		batch.begin();
-
-		batch.draw(frameBuffer.getColorBufferTexture(), 0.0f, 0.0f);
-
-		batch.end();
-
-		stage.draw();
 	}
 
 	private void proceed() {
@@ -412,11 +418,14 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void pause() {
-
+		System.out.printf("paused game screen\n");
+		isFocused = false;
 	}
 
 	@Override
 	public void resume() {
+		System.out.printf("resumed game screen\n");
+		isFocused = true;
 	}
 
 	@Override
