@@ -135,7 +135,7 @@ public class MenuScreen implements Screen {
 
 	}
 
-	public BitmapFont getBitmapFont50() {
+	public BitmapFont getBitmapButtonFont() {
 		return bitmapButtonFont;
 	}
 	
