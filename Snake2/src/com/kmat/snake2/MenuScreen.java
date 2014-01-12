@@ -48,7 +48,7 @@ public class MenuScreen implements Screen {
 		
 		stage = new Stage();
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/RobotoCondensed-Bold.ttf"));
-		bitmapFont50 = generator.generateFont(50);
+		bitmapFont50 = generator.generateFont(80);
 		bitmapFont40 = generator.generateFont(40);
 		ninePatch = new NinePatch(new Texture(Gdx.files.internal("data/test.png")), 4, 4, 4, 5);
 		patchDrawable = new NinePatchDrawable(ninePatch);
@@ -58,7 +58,7 @@ public class MenuScreen implements Screen {
 		
 		SliderStyle sliderStyle = new SliderStyle();
 		sliderStyle.knob = new Image(new Texture(Gdx.files.internal("data/knob.png"))).getDrawable();
-		sliderStyle.background = new Image(new Texture(Gdx.files.internal("data/slider.png"))).getDrawable();
+		sliderStyle.background = new Image(new Texture(Gdx.files.internal("data/slider2.png"))).getDrawable();
 		
 		diffSlider = new Slider(1.0f, 20.0f, 0.5f, false, sliderStyle);
 		diffSlider.setValue(7.0f);
