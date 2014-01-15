@@ -249,8 +249,8 @@ public class GameScreen implements Screen {
 					break;
 				}
 			}
-			stage.act(delta);
 			
+			stage.act(delta);
 			batch.setProjectionMatrix(camera.combined);
 			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -258,6 +258,7 @@ public class GameScreen implements Screen {
 			batch.begin();
 			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+			
 			int firstX = (int)((1280 / 32.0f - boardX) / 2 * 32);
 			int firstY = (int)((720 / 32.0f - boardY) / 2 * 32);
 			for(int i = 0; i < boardX; i++)
@@ -281,15 +282,10 @@ public class GameScreen implements Screen {
 				}
 			}
 			batch.end();
-			
 			frameBuffer.end();
-			
 			batch.begin();
-	
 			batch.draw(frameBuffer.getColorBufferTexture(), 0.0f, 0.0f);
-	
 			batch.end();
-	
 			stage.draw();
 		}
 	}
