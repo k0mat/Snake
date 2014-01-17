@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -12,12 +14,18 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -34,6 +42,7 @@ public class MenuScreen implements Screen {
 	private NinePatchDrawable patchDrawable;
 	private Slider diffSlider;
 	private Label diffLabel;
+	private Label levelLabel;
 	private TextButton startButton;
 	private TextButton resumeButton;
 	private TextButton optionsButton;
@@ -53,6 +62,7 @@ public class MenuScreen implements Screen {
 		bitmapFont40 = generator.generateFont(40);
 		ninePatch = new NinePatch(new Texture(Gdx.files.internal("data/test.png")), 4, 4, 4, 5);
 		patchDrawable = new NinePatchDrawable(ninePatch);
+		
 		buttonStyle = new TextButtonStyle(patchDrawable, patchDrawable, patchDrawable, bitmapButtonFont);
 		buttonStyle.fontColor = Color.WHITE;
 		buttonStyle.disabledFontColor = Color.GRAY;
@@ -65,6 +75,7 @@ public class MenuScreen implements Screen {
 		
 		diffSlider = new Slider(1.0f, 20.0f, 0.5f, false, sliderStyle);
 		diffSlider.setValue(7.0f);
+		diffSlider.setWidth(diffSlider.getWidth() * 2);
 		diffSlider.setPosition(Gdx.graphics.getWidth() / 2 - diffSlider.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 100);
 		
 		diffSlider.addCaptureListener(new ChangeListener(){
@@ -75,6 +86,27 @@ public class MenuScreen implements Screen {
 					}
 					
 				});
+		
+		ListStyle listStyle = new ListStyle();
+		ScrollPaneStyle scrollStyle = new ScrollPaneStyle();
+		Pixmap bg = new Pixmap(1, 1, Format.RGBA8888);
+		bg.setColor(Color.GRAY);
+		bg.fill();
+		scrollStyle.background = new Image(new Texture(bg)).getDrawable();
+		scrollStyle.vScroll = new Image(new Texture(Gdx.files.internal("data/knob.png"))).getDrawable();
+		scrollStyle.vScrollKnob = new Image(new Texture(Gdx.files.internal("data/slider2.png"))).getDrawable();
+		listStyle.font = bitmapFont40;
+		listStyle.selection = new Image(new Texture(bg)).getDrawable();;
+		
+		SelectBoxStyle boxStyle = new SelectBoxStyle();
+		boxStyle.font = bitmapFont40;
+		boxStyle.listStyle = listStyle;
+		boxStyle.scrollStyle = scrollStyle;
+		boxStyle.background = new Image(new Texture(bg)).getDrawable();
+		bg.dispose();
+		
+		SelectBox levelSelect = new SelectBox(new String[] {" Standard"," No walls"},boxStyle);
+		levelSelect.setPosition(Gdx.graphics.getWidth() / 2 - levelSelect.getWidth() / 2, Gdx.graphics.getHeight() / 2 - 100);
 			
 		startButton = new TextButton("  START  ", buttonStyle);
 		startButton.addListener(new ClickListener() {
@@ -119,7 +151,11 @@ public class MenuScreen implements Screen {
 		
 		diffLabel = new Label("Snake speed: " + diffSlider.getValue(), labelStyle);
 		diffLabel.setPosition(Gdx.graphics.getWidth() / 2 - diffLabel.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 120 + diffLabel.getHeight());
+		levelLabel = new Label("Choose a level", labelStyle);
+		levelLabel.setPosition(Gdx.graphics.getWidth() / 2 - levelLabel.getWidth() / 2, Gdx.graphics.getHeight() / 2 - 80 + levelLabel.getHeight());
 		
+		stage.addActor(levelLabel);
+		stage.addActor(levelSelect);
 		stage.addActor(diffLabel);
 		stage.addActor(startButton);
 		stage.addActor(resumeButton);
@@ -178,7 +214,6 @@ public class MenuScreen implements Screen {
 	public void dispose() {
 		generator.dispose();
 		stage.dispose();
-
 	}
 
 	public BitmapFont getBitmapButtonFont() {
