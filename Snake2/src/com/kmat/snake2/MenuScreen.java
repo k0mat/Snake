@@ -18,14 +18,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -43,6 +41,7 @@ public class MenuScreen implements Screen {
 	private Slider diffSlider;
 	private Label diffLabel;
 	private Label levelLabel;
+	SelectBox levelSelect;
 	private TextButton startButton;
 	private TextButton resumeButton;
 	private TextButton optionsButton;
@@ -62,7 +61,6 @@ public class MenuScreen implements Screen {
 		bitmapFont40 = generator.generateFont(40);
 		ninePatch = new NinePatch(new Texture(Gdx.files.internal("data/test.png")), 4, 4, 4, 5);
 		patchDrawable = new NinePatchDrawable(ninePatch);
-		
 		buttonStyle = new TextButtonStyle(patchDrawable, patchDrawable, patchDrawable, bitmapButtonFont);
 		buttonStyle.fontColor = Color.WHITE;
 		buttonStyle.disabledFontColor = Color.GRAY;
@@ -105,14 +103,14 @@ public class MenuScreen implements Screen {
 		boxStyle.background = new Image(new Texture(bg)).getDrawable();
 		bg.dispose();
 		
-		SelectBox levelSelect = new SelectBox(new String[] {" Standard"," No walls"},boxStyle);
+		levelSelect = new SelectBox(new String[] {" Standard"," No walls"},boxStyle);
 		levelSelect.setPosition(Gdx.graphics.getWidth() / 2 - levelSelect.getWidth() / 2, Gdx.graphics.getHeight() / 2 - 100);
 			
 		startButton = new TextButton("  START  ", buttonStyle);
 		startButton.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				snakeGame.setScreen(snakeGame.gameScreen);
-				snakeGame.gameScreen.reset(diffSlider.getValue(), 1.0f);
+				snakeGame.gameScreen.reset(diffSlider.getValue(), 1.0f, levelSelect.getSelection());
 			}
 		});
 		

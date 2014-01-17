@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
@@ -48,10 +47,11 @@ public class GameScreen implements Screen {
 	private boolean inProgress;
 	private boolean isFocused;
 	
+	private LevelSelector levelSelector;
 	private int secondChance;
-	private int boardX;	//32
-	private int boardY;	//22
-	private byte board[][] = new byte[30][20];
+	private int boardWidth;
+	private int boardHeight;
+	private byte board[][];
 	private Random random;
 	public Direction direction;
 	public int side;
@@ -87,29 +87,25 @@ public class GameScreen implements Screen {
 		isFocused = true;
 		secondChance = 2;
 		create();
-		reset(7.0f, 1.0f);
+		//reset(7.0f, 1.0f);
 	}
 	
-	public void reset(float speed, float countDown, float multiplier) {
-		reset(speed, countDown);
-		scoreMultiplier = multiplier;
-		multiplierLabel.setText("MULTIPLIER: " + scoreMultiplier);
-	}
-	
-	public void reset(float speed, float countDown) {
+	public void reset(float speed, float gracePeriod, String level)
+	{
 		elapsedTime = 0.0f;
-		lastUpdate = countDown;
+		lastUpdate = gracePeriod;
 		this.speed = speed;
 		secondChance = 2;
-		boardX = 30;
-		boardY = 20;
 		score = 0;
-		scoreMultiplier = speed / 20.0f * 4;
+		levelSelector.initLevel(level);
+		boardWidth = levelSelector.getLevelWidth();
+		boardHeight = levelSelector.getLevelHeight();
+		board = levelSelector.getBoard();
 		scoreLabel.setText("SCORE: " + (int)(score * scoreMultiplier));
 		lengthLabel.setText("LENGTH: " + (score + 3));
 		multiplierLabel.setText("MULTIPLIER: " + scoreMultiplier);
-		fillBoard();
 		placeApple();
+		placeSnake();
 	}
 	
 	public void applyGracePeriod(float period)
@@ -121,37 +117,22 @@ public class GameScreen implements Screen {
 		int i,j;
 		do
 		{
-			i = random.nextInt(boardX - 2) + 1;
-			j = random.nextInt(boardY - 2) + 1;	
+			i = random.nextInt(boardWidth - 2) + 1;
+			j = random.nextInt(boardHeight - 2) + 1;	
 		}while(board[i][j] != 0);
 		board[i][j] = 3;
 	}
 
-	private void fillBoard() {
-		board = new byte[boardX][boardY];
-		for(int i = 0; i < boardX; i++)
-		{
-			for(int j = 0; j < boardY; j++)
-			{
-				if(i == 0 || i == (boardX - 1) || j == 0 || j == (boardY - 1))
-					board[i][j] = 1;
-				else
-					board[i][j] = 0;
-			}
-		}
-		placeSnake();
-	}
-
 	private void placeSnake() {
-		board[boardX / 2 - 1][boardY / 2] = 2;
-		board[boardX / 2][boardY / 2] = 2;
-		board[boardX / 2 + 1][boardY / 2] = 2;
+		board[boardWidth / 2 - 1][boardHeight / 2] = 2;
+		board[boardWidth / 2][boardHeight / 2] = 2;
+		board[boardWidth / 2 + 1][boardHeight / 2] = 2;
 		direction = Direction.WEST;
 		side = 0;
 		snake = new ArrayDeque<Vector2>();
-		snake.offerFirst(new Vector2((boardX / 2 + 1), (boardY / 2)));
-		snake.offerFirst(new Vector2((boardX / 2), (boardY / 2)));
-		snake.offerFirst(new Vector2((boardX / 2 - 1), (boardY / 2)));
+		snake.offerFirst(new Vector2((boardWidth / 2 + 1), (boardHeight / 2)));
+		snake.offerFirst(new Vector2((boardWidth / 2), (boardHeight / 2)));
+		snake.offerFirst(new Vector2((boardWidth / 2 - 1), (boardHeight / 2)));
 	}
 
 	private void create()
@@ -170,28 +151,21 @@ public class GameScreen implements Screen {
 		camera.setToOrtho(false, 1280, 720);
 		
 		snakeSegment = new Texture(Gdx.files.internal("data/snake_segment.png"));
-		snakeSegment.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		wall = new Texture(Gdx.files.internal("data/border.png"));
-		wall.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		apple = new Texture(Gdx.files.internal("data/apple.png"));
-		apple.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		options  = new Texture(Gdx.files.internal("data/ic_action_settings.png"));
 		batch = new SpriteBatch();
 		
 		scoreSound = Gdx.audio.newSound(Gdx.files.internal("data/score.mp3"));
 		
 		random = new Random();
-		boardX = 30;
-		boardY = 20;
+		levelSelector = new LevelSelector();
 		
 		ButtonStyle style = new ButtonStyle();
 		Image image = new Image(options);
 		style.up = image.getDrawable();
 		
 		LabelStyle labelStyle = new LabelStyle(snakeGame.menuScreen.getBitmapFont40(), Color.WHITE);
-		
-		
-
 		
 		highscoreLabel = new Label("HIGHSCORE: " + highscore, labelStyle);
 		scoreLabel = new Label("SCORE: ", labelStyle);
@@ -259,22 +233,22 @@ public class GameScreen implements Screen {
 			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 			
-			int firstX = (int)((1280 / 32.0f - boardX) / 2 * 32);
-			int firstY = (int)((720 / 32.0f - boardY) / 2 * 32);
-			for(int i = 0; i < boardX; i++)
+			int firstX = (int)((1280 / 32.0f - boardWidth) / 2 * 32);
+			int firstY = (int)((720 / 32.0f - boardHeight) / 2 * 32);
+			for(int i = 0; i < boardWidth; i++)
 			{
-				for(int j = 0; j < boardY; j++)
+				for(int j = 0; j < boardHeight; j++)
 				{
 					switch(board[i][j])
 					{
 					case 1:
-						batch.draw(wall, firstX +  i * 32, firstY + (boardY - 1) * 32 - j * 32 + 25);
+						batch.draw(wall, firstX +  i * 32, firstY + (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
 					case 2:
-						batch.draw(snakeSegment, firstX +  i * 32, firstY + (boardY - 1)  * 32 - j * 32 + 25);
+						batch.draw(snakeSegment, firstX +  i * 32, firstY + (boardHeight - 1)  * 32 - j * 32 + 25);
 						break;
 					case 3:
-						batch.draw(apple, firstX + i * 32, firstY + (boardY - 1) * 32 -  j * 32 + 25);
+						batch.draw(apple, firstX + i * 32, firstY + (boardHeight - 1) * 32 -  j * 32 + 25);
 						break;
 					default:
 						break;
@@ -377,7 +351,7 @@ public class GameScreen implements Screen {
 			else
 			{
 				inProgress = false;
-				reset(speed, 1.0f);
+				reset(speed, 1.0f, levelSelector.getLevel());
 			}
 			break;
 		case 2:
@@ -388,7 +362,7 @@ public class GameScreen implements Screen {
 			else
 			{
 				inProgress = false;
-				reset(speed, 1.0f);
+				reset(speed, 1.0f, levelSelector.getLevel());
 			}
 			break;
 		case 3:
@@ -398,6 +372,10 @@ public class GameScreen implements Screen {
 			score++;
 			scoreSound.play(1.0f);
 			placeApple();
+			break;
+		case 4:
+			break;
+		default:
 			break;
 		}
 		if ((int)(score * scoreMultiplier) > highscore)
