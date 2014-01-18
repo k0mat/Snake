@@ -38,6 +38,7 @@ public class GameScreen implements Screen {
 	private Texture apple;
 	private Texture wall;
 	private Texture options;
+	private Texture levelTexture;
 	private SpriteBatch batch;
 
 	private float elapsedTime;
@@ -93,6 +94,7 @@ public class GameScreen implements Screen {
 		boardWidth = levelSelector.getLevelWidth();
 		boardHeight = levelSelector.getLevelHeight();
 		board = levelSelector.getBoard();
+		levelTexture = levelSelector.getLevelTexture();
 		scoreMultiplier = speed / 20.0f * 4;
 		scoreLabel.setText("SCORE: " + (int) (score * scoreMultiplier));
 		lengthLabel.setText("LENGTH: " + (score + 3));
@@ -220,12 +222,11 @@ public class GameScreen implements Screen {
 
 			int firstX = (int) ((1280 / 32.0f - boardWidth) / 2 * 32);
 			int firstY = (int) ((720 / 32.0f - boardHeight) / 2 * 32);
+			batch.draw(levelTexture, firstX, firstY + 40);
 			for (int i = 0; i < boardWidth; i++) {
 				for (int j = 0; j < boardHeight; j++) {
 					switch (board[i][j]) {
 					case 1:
-						batch.draw(wall, firstX + i * 32, firstY
-								+ (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
 					case 2:
 						batch.draw(snakeSegment, firstX + i * 32, firstY
@@ -236,8 +237,6 @@ public class GameScreen implements Screen {
 								+ (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
 					case 4:
-						batch.draw(apple, firstX + i * 32, firstY
-								+ (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
 					default:
 						break;
@@ -319,8 +318,6 @@ public class GameScreen implements Screen {
 	}
 
 	private void collisionCheck(int i, int j) {
-		
-		
 		switch (board[(int) tempFragment.x + i][(int) tempFragment.y + j]) {
 		case 0:
 			board[(int) tempFragment.x + i][(int) tempFragment.y + j] = 2;
@@ -423,6 +420,7 @@ public class GameScreen implements Screen {
 		options.dispose();
 		stage.dispose();
 		scoreSound.dispose();
+		levelSelector.dispose();
 	}
 
 	public boolean isInProgress() {
