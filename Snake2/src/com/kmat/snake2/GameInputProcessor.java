@@ -7,37 +7,27 @@ public class GameInputProcessor implements InputProcessor {
 	private float width;
 	private float height;
 	private GameScreen game;
-	
-	
+
 	@Override
 	public boolean keyDown(int keycode) {
-		if(game.isInProgress())
-		{
-			if(keycode == Input.Keys.A)
-			{
+		if (game.isInProgress()) {
+			if (keycode == Input.Keys.A) {
 				game.side = 3;
 				return true;
-			}
-			else if(keycode == Input.Keys.D)
-			{
+			} else if (keycode == Input.Keys.D) {
 				game.side = 4;
 				return true;
-			}
-			else if(keycode == Input.Keys.W)
-			{
+			} else if (keycode == Input.Keys.W) {
 				game.side = 5;
 				return true;
-			}
-			else if(keycode == Input.Keys.S)
-			{
+			} else if (keycode == Input.Keys.S) {
 				game.side = 6;
 				return true;
-			}
-			else
-			return false;
+			} else
+				return false;
 		}
 		return false;
-	}	
+	}
 
 	@Override
 	public boolean keyUp(int keycode) {
@@ -53,19 +43,15 @@ public class GameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if(game.isInProgress())
-		{
-			if(screenX < width / 2)
-			{
+		if (game.isInProgress()) {
+			if (screenX < width / 2) {
 				game.side = 1;
-			}
-			else
-			{
+			} else {
 				game.side = 2;
-				
+
 			}
 			return true;
-			}
+		}
 		return false;
 	}
 
