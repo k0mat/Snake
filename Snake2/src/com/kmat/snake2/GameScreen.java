@@ -31,22 +31,22 @@ public class GameScreen implements Screen {
 	private InputMultiplexer inputMultiplexer;
 	private FrameBuffer frameBuffer;
 	private OrthographicCamera camera;
-	
+
 	private Sound scoreSound;
-	
+
 	private Texture snakeSegment;
 	private Texture apple;
 	private Texture wall;
 	private Texture options;
 	private SpriteBatch batch;
-	
+
 	private float elapsedTime;
 	private float lastUpdate;
 	private float speed;
-	
+
 	private boolean inProgress;
 	private boolean isFocused;
-	
+
 	private LevelSelector levelSelector;
 	private int secondChance;
 	private int boardWidth;
@@ -57,40 +57,33 @@ public class GameScreen implements Screen {
 	public int side;
 	private int score;
 	private float scoreMultiplier;
-	
+
 	private ArrayDeque<Vector2> snake;
 	private Vector2 tempFragment;
-	
+
 	private Stage stage;
 	Button optionsButton;
 	Label scoreLabel;
 	Label lengthLabel;
 	Label multiplierLabel;
 	Label highscoreLabel;
-	
+
 	private Preferences prefs;
 	private int highscore;
-	
 
-	public enum Direction
-	{
-		NORTH,
-		EAST,
-		SOUTH,
-		WEST
+	public enum Direction {
+		NORTH, EAST, SOUTH, WEST
 	}
-	
-	public GameScreen(SnakeGame snakeGame)
-	{
+
+	public GameScreen(SnakeGame snakeGame) {
 		this.snakeGame = snakeGame;
 		inProgress = false;
 		isFocused = true;
 		secondChance = 2;
 		create();
 	}
-	
-	public void reset(float speed, float gracePeriod, String level)
-	{
+
+	public void reset(float speed, float gracePeriod, String level) {
 		elapsedTime = 0.0f;
 		lastUpdate = gracePeriod;
 		this.speed = speed;
@@ -101,25 +94,23 @@ public class GameScreen implements Screen {
 		boardHeight = levelSelector.getLevelHeight();
 		board = levelSelector.getBoard();
 		scoreMultiplier = speed / 20.0f * 4;
-		scoreLabel.setText("SCORE: " + (int)(score * scoreMultiplier));
+		scoreLabel.setText("SCORE: " + (int) (score * scoreMultiplier));
 		lengthLabel.setText("LENGTH: " + (score + 3));
 		multiplierLabel.setText("MULTIPLIER: " + scoreMultiplier);
 		placeApple();
 		placeSnake();
 	}
-	
-	public void applyGracePeriod(float period)
-	{
+
+	public void applyGracePeriod(float period) {
 		lastUpdate += period;
 	}
 
 	private void placeApple() {
-		int i,j;
-		do
-		{
+		int i, j;
+		do {
 			i = random.nextInt(boardWidth - 2) + 1;
-			j = random.nextInt(boardHeight - 2) + 1;	
-		}while(board[i][j] != 0);
+			j = random.nextInt(boardHeight - 2) + 1;
+		} while (board[i][j] != 0);
 		board[i][j] = 3;
 	}
 
@@ -135,12 +126,12 @@ public class GameScreen implements Screen {
 		snake.offerFirst(new Vector2((boardWidth / 2 - 1), (boardHeight / 2)));
 	}
 
-	private void create()
-	{	
+	private void create() {
 		prefs = Gdx.app.getPreferences("Snake Preferences");
-		highscore = prefs.getInteger("highscore" , 0);
-		
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+		highscore = prefs.getInteger("highscore", 0);
+
+		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
+				true);
 		gameInputProcessor = new GameInputProcessor();
 		gameInputProcessor.setGame(this);
 		inputMultiplexer = new InputMultiplexer();
@@ -149,81 +140,75 @@ public class GameScreen implements Screen {
 		frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, 1280, 720, false);
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 1280, 720);
-		
+
 		snakeSegment = new Texture(Gdx.files.internal("data/snake_segment.png"));
 		wall = new Texture(Gdx.files.internal("data/border.png"));
 		apple = new Texture(Gdx.files.internal("data/apple.png"));
-		options  = new Texture(Gdx.files.internal("data/ic_action_settings.png"));
+		options = new Texture(Gdx.files.internal("data/ic_action_settings.png"));
 		batch = new SpriteBatch();
-		
+
 		scoreSound = Gdx.audio.newSound(Gdx.files.internal("data/score.mp3"));
-		
+
 		random = new Random();
 		levelSelector = new LevelSelector();
-		
+
 		ButtonStyle style = new ButtonStyle();
 		Image image = new Image(options);
 		style.up = image.getDrawable();
-		
-		LabelStyle labelStyle = new LabelStyle(snakeGame.menuScreen.getBitmapFont40(), Color.WHITE);
-		
+
+		LabelStyle labelStyle = new LabelStyle(
+				snakeGame.menuScreen.getBitmapFont40(), Color.WHITE);
+
 		highscoreLabel = new Label("HIGHSCORE: " + highscore, labelStyle);
 		scoreLabel = new Label("SCORE: ", labelStyle);
 		multiplierLabel = new Label("MULTIPLIER: ", labelStyle);
 		lengthLabel = new Label("LENGTH: ", labelStyle);
 		optionsButton = new Button(style);
-		
-		int tempX = Gdx.graphics.getWidth() / 8,
-			tempY= Gdx.graphics.getHeight();
-		
+
+		int tempX = Gdx.graphics.getWidth() / 8, tempY = Gdx.graphics
+				.getHeight();
+
 		optionsButton.setPosition(Gdx.graphics.getWidth() - 96, tempY - 96);
-		
+
 		lengthLabel.setPosition(tempX * 4, tempY - 58);
 		scoreLabel.setPosition(tempX * 2 + (tempX * 2 / 3), tempY - 58);
 		multiplierLabel.setPosition(tempX * 5 + tempX / 2, tempY - 58);
 		highscoreLabel.setPosition(tempX * 1, tempY - 58);
-		
+
 		optionsButton.addListener(new ClickListener() {
-			public void clicked (InputEvent event, float x, float y) {
+			public void clicked(InputEvent event, float x, float y) {
 				snakeGame.setScreen(snakeGame.menuScreen);
 			}
 		});
-		
+
 		stage.addActor(highscoreLabel);
 		stage.addActor(scoreLabel);
 		stage.addActor(lengthLabel);
 		stage.addActor(multiplierLabel);
 		stage.addActor(optionsButton);
 	}
-	
+
 	@Override
 	public void render(float delta) {
-		delta = Math.min(delta, 0.17f);		//a bit higher than 1.0f/60.0f
-		if(this.isFocused == true)
-		{
+		delta = Math.min(delta, 0.17f); // a bit higher than 1.0f/60.0f
+		if (this.isFocused == true) {
 			float tickTime = 1 / speed;
 			elapsedTime += delta;
-			while(lastUpdate < elapsedTime)
-			{
-				if(lastUpdate + tickTime <= elapsedTime)
-				{
-					if(inProgress == false)
-					{
+			while (lastUpdate < elapsedTime) {
+				if (lastUpdate + tickTime <= elapsedTime) {
+					if (inProgress == false) {
 						inProgress = true;
 					}
-					if(this.secondChance < 2)
-					{
+					if (this.secondChance < 2) {
 						this.secondChance++;
 					}
 					lastUpdate += tickTime;
 					proceed();
-				}
-				else
-				{
+				} else {
 					break;
 				}
 			}
-			
+
 			stage.act(delta);
 			batch.setProjectionMatrix(camera.combined);
 			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -232,23 +217,23 @@ public class GameScreen implements Screen {
 			batch.begin();
 			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-			
-			int firstX = (int)((1280 / 32.0f - boardWidth) / 2 * 32);
-			int firstY = (int)((720 / 32.0f - boardHeight) / 2 * 32);
-			for(int i = 0; i < boardWidth; i++)
-			{
-				for(int j = 0; j < boardHeight; j++)
-				{
-					switch(board[i][j])
-					{
+
+			int firstX = (int) ((1280 / 32.0f - boardWidth) / 2 * 32);
+			int firstY = (int) ((720 / 32.0f - boardHeight) / 2 * 32);
+			for (int i = 0; i < boardWidth; i++) {
+				for (int j = 0; j < boardHeight; j++) {
+					switch (board[i][j]) {
 					case 1:
-						batch.draw(wall, firstX +  i * 32, firstY + (boardHeight - 1) * 32 - j * 32 + 25);
+						batch.draw(wall, firstX + i * 32, firstY
+								+ (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
 					case 2:
-						batch.draw(snakeSegment, firstX +  i * 32, firstY + (boardHeight - 1)  * 32 - j * 32 + 25);
+						batch.draw(snakeSegment, firstX + i * 32, firstY
+								+ (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
 					case 3:
-						batch.draw(apple, firstX + i * 32, firstY + (boardHeight - 1) * 32 -  j * 32 + 25);
+						batch.draw(apple, firstX + i * 32, firstY
+								+ (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
 					default:
 						break;
@@ -265,110 +250,87 @@ public class GameScreen implements Screen {
 	}
 
 	private void proceed() {
-		if(side == 1)
-		{
-			if(direction == GameScreen.Direction.NORTH)
+		if (side == 1) {
+			if (direction == GameScreen.Direction.NORTH)
 				direction = GameScreen.Direction.WEST;
-			else if(direction == GameScreen.Direction.WEST)
+			else if (direction == GameScreen.Direction.WEST)
 				direction = GameScreen.Direction.SOUTH;
-			else if(direction == GameScreen.Direction.SOUTH)
+			else if (direction == GameScreen.Direction.SOUTH)
 				direction = GameScreen.Direction.EAST;
-			else if(direction == GameScreen.Direction.EAST)
+			else if (direction == GameScreen.Direction.EAST)
 				direction = GameScreen.Direction.NORTH;
-		}
-		else if(side == 2)
-		{
-			if(direction == GameScreen.Direction.NORTH)
+		} else if (side == 2) {
+			if (direction == GameScreen.Direction.NORTH)
 				direction = GameScreen.Direction.EAST;
-			else if(direction == GameScreen.Direction.EAST)
+			else if (direction == GameScreen.Direction.EAST)
 				direction = GameScreen.Direction.SOUTH;
-			else if(direction == GameScreen.Direction.SOUTH)
+			else if (direction == GameScreen.Direction.SOUTH)
 				direction = GameScreen.Direction.WEST;
-			else if(direction == GameScreen.Direction.WEST)
+			else if (direction == GameScreen.Direction.WEST)
 				direction = GameScreen.Direction.NORTH;
-		}
-		else if(side == 3)
-		{
-			if(direction != GameScreen.Direction.EAST)
+		} else if (side == 3) {
+			if (direction != GameScreen.Direction.EAST)
 				direction = GameScreen.Direction.WEST;
-		}
-		else if(side == 4)
-		{
-			if(direction != GameScreen.Direction.WEST)
+		} else if (side == 4) {
+			if (direction != GameScreen.Direction.WEST)
 				direction = GameScreen.Direction.EAST;
-		}
-		else if(side == 5)
-		{
-			if(direction != GameScreen.Direction.SOUTH)
+		} else if (side == 5) {
+			if (direction != GameScreen.Direction.SOUTH)
 				direction = GameScreen.Direction.NORTH;
-		}
-		else if(side == 6)
-		{
-			if(direction != GameScreen.Direction.NORTH)
+		} else if (side == 6) {
+			if (direction != GameScreen.Direction.NORTH)
 				direction = GameScreen.Direction.SOUTH;
 		}
 		side = 0;
-		
+
 		int i = 0, j = 0;
-		if(direction == GameScreen.Direction.NORTH)
-		{
+		if (direction == GameScreen.Direction.NORTH) {
 			i = 0;
 			j = 1;
-		}
-		else if(direction == GameScreen.Direction.WEST)
-		{
+		} else if (direction == GameScreen.Direction.WEST) {
 			i = -1;
 			j = 0;
-		}
-		else if(direction == GameScreen.Direction.SOUTH)
-		{
+		} else if (direction == GameScreen.Direction.SOUTH) {
 			i = 0;
 			j = -1;
-		}
-		else if(direction == GameScreen.Direction.EAST)
-		{
+		} else if (direction == GameScreen.Direction.EAST) {
 			i = 1;
 			j = 0;
 		}
-		
+
 		tempFragment = snake.peekFirst();
-		switch(board[(int)tempFragment.x + i][(int)tempFragment.y +j])
-		{
+		switch (board[(int) tempFragment.x + i][(int) tempFragment.y + j]) {
 		case 0:
 			tempFragment = snake.pollLast();
-			board[(int)tempFragment.x][(int)tempFragment.y] = 0;
+			board[(int) tempFragment.x][(int) tempFragment.y] = 0;
 			tempFragment = snake.peekFirst();
-			board[(int)tempFragment.x + i][(int)tempFragment.y + j] = 2;
-			snake.offerFirst(new Vector2((int)tempFragment.x + i, (int)tempFragment.y + j));
-			
+			board[(int) tempFragment.x + i][(int) tempFragment.y + j] = 2;
+			snake.offerFirst(new Vector2((int) tempFragment.x + i,
+					(int) tempFragment.y + j));
+
 			break;
 		case 1:
-			
-			if(this.secondChance >= 2)
-			{
+
+			if (this.secondChance >= 2) {
 				this.secondChance = 0;
-			}
-			else
-			{
+			} else {
 				inProgress = false;
 				reset(speed, 1.0f, levelSelector.getLevel());
 			}
 			break;
 		case 2:
-			if(this.secondChance >= 2)
-			{
+			if (this.secondChance >= 2) {
 				this.secondChance = 0;
-			}
-			else
-			{
+			} else {
 				inProgress = false;
 				reset(speed, 1.0f, levelSelector.getLevel());
 			}
 			break;
 		case 3:
 			tempFragment = snake.peekFirst();
-			board[(int)tempFragment.x + i][(int)tempFragment.y + j] = 2;
-			snake.offerFirst(new Vector2((int)tempFragment.x + i, (int)tempFragment.y + j));
+			board[(int) tempFragment.x + i][(int) tempFragment.y + j] = 2;
+			snake.offerFirst(new Vector2((int) tempFragment.x + i,
+					(int) tempFragment.y + j));
 			score++;
 			scoreSound.play(1.0f);
 			placeApple();
@@ -378,15 +340,14 @@ public class GameScreen implements Screen {
 		default:
 			break;
 		}
-		if ((int)(score * scoreMultiplier) > highscore)
-		{
-			prefs.putInteger("highscore", (int)(score * scoreMultiplier));
-			highscore = (int)(score * scoreMultiplier);
+		if ((int) (score * scoreMultiplier) > highscore) {
+			prefs.putInteger("highscore", (int) (score * scoreMultiplier));
+			highscore = (int) (score * scoreMultiplier);
 			prefs.flush();
 		}
-		
+
 		highscoreLabel.setText("HIGHSCORE: " + highscore);
-		scoreLabel.setText("SCORE: " + (int)(score * scoreMultiplier));
+		scoreLabel.setText("SCORE: " + (int) (score * scoreMultiplier));
 		lengthLabel.setText("LENGTH: " + (score + 3));
 		multiplierLabel.setText("MULTIPLIER: " + scoreMultiplier);
 	}
@@ -394,19 +355,18 @@ public class GameScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		int tempX = width / 8;
-		
+
 		gameInputProcessor.setWidth(width);
 		gameInputProcessor.setHeight(height);
 		stage.setViewport(width, height, true);
-		
+
 		optionsButton.setPosition(width - 96, height - 96);
-		
+
 		lengthLabel.setPosition(tempX * 4, height - 58);
 		scoreLabel.setPosition(tempX * 2 + (tempX * 2 / 3), height - 58);
 		multiplierLabel.setPosition(tempX * 5 + tempX / 2, height - 58);
 		highscoreLabel.setPosition(tempX * 1, height - 58);
-		
-		
+
 	}
 
 	@Override

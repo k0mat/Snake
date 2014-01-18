@@ -16,18 +16,15 @@ public class LogoScreen implements Screen {
 	private Stage stage;
 	private Table table;
 
-	
-	public LogoScreen(SnakeGame snakeGame)
-	{
+	public LogoScreen(SnakeGame snakeGame) {
 		this.snakeGame = snakeGame;
 	}
-	
+
 	@Override
 	public void render(float delta) {
-		stage.act(delta);	
+		stage.act(delta);
 		time += delta;
-		if(time > 3.0f)
-		{
+		if (time > 3.0f) {
 			snakeGame.setScreen(snakeGame.menuScreen);
 		}
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -49,9 +46,12 @@ public class LogoScreen implements Screen {
 		table.setFillParent(true);
 		logoTexture = new Texture(Gdx.files.internal("data/logo.png"));
 		logoImage = new Image(logoTexture);
-		logoImage.setPosition((Gdx.graphics.getWidth() / 2.0f) - (logoTexture.getWidth() / 2.0f), (Gdx.graphics.getHeight() / 2.0f) - (logoTexture.getHeight() / 2.0f));
+		logoImage.setPosition(
+				(Gdx.graphics.getWidth() / 2.0f)
+						- (logoTexture.getWidth() / 2.0f),
+				(Gdx.graphics.getHeight() / 2.0f)
+						- (logoTexture.getHeight() / 2.0f));
 		stage.addActor(logoImage);
-
 
 	}
 

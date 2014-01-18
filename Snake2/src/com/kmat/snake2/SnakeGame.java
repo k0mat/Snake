@@ -6,7 +6,7 @@ public class SnakeGame extends Game {
 	public GameScreen gameScreen;
 	public MenuScreen menuScreen;
 	public LogoScreen logoScreen;
-	
+
 	@Override
 	public void create() {
 		logoScreen = new LogoScreen(this);
