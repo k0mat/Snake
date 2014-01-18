@@ -87,7 +87,6 @@ public class GameScreen implements Screen {
 		isFocused = true;
 		secondChance = 2;
 		create();
-		//reset(7.0f, 1.0f);
 	}
 	
 	public void reset(float speed, float gracePeriod, String level)
@@ -101,6 +100,7 @@ public class GameScreen implements Screen {
 		boardWidth = levelSelector.getLevelWidth();
 		boardHeight = levelSelector.getLevelHeight();
 		board = levelSelector.getBoard();
+		scoreMultiplier = speed / 20.0f * 4;
 		scoreLabel.setText("SCORE: " + (int)(score * scoreMultiplier));
 		lengthLabel.setText("LENGTH: " + (score + 3));
 		multiplierLabel.setText("MULTIPLIER: " + scoreMultiplier);
