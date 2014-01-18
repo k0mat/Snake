@@ -235,6 +235,10 @@ public class GameScreen implements Screen {
 						batch.draw(apple, firstX + i * 32, firstY
 								+ (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
+					case 4:
+						batch.draw(apple, firstX + i * 32, firstY
+								+ (boardHeight - 1) * 32 - j * 32 + 25);
+						break;
 					default:
 						break;
 					}
@@ -298,16 +302,32 @@ public class GameScreen implements Screen {
 			j = 0;
 		}
 
-		tempFragment = snake.peekFirst();
+		
+		tempFragment = new Vector2(snake.peekFirst().x, snake.peekFirst().y);
+		collisionCheck(i, j);
+		
+		if ((int) (score * scoreMultiplier) > highscore) {
+			prefs.putInteger("highscore", (int) (score * scoreMultiplier));
+			highscore = (int) (score * scoreMultiplier);
+			prefs.flush();
+		}
+
+		highscoreLabel.setText("HIGHSCORE: " + highscore);
+		scoreLabel.setText("SCORE: " + (int) (score * scoreMultiplier));
+		lengthLabel.setText("LENGTH: " + (score + 3));
+		multiplierLabel.setText("MULTIPLIER: " + scoreMultiplier);
+	}
+
+	private void collisionCheck(int i, int j) {
+		
+		
 		switch (board[(int) tempFragment.x + i][(int) tempFragment.y + j]) {
 		case 0:
-			tempFragment = snake.pollLast();
-			board[(int) tempFragment.x][(int) tempFragment.y] = 0;
-			tempFragment = snake.peekFirst();
 			board[(int) tempFragment.x + i][(int) tempFragment.y + j] = 2;
 			snake.offerFirst(new Vector2((int) tempFragment.x + i,
 					(int) tempFragment.y + j));
-
+			tempFragment = snake.pollLast();
+			board[(int) tempFragment.x][(int) tempFragment.y] = 0;
 			break;
 		case 1:
 
@@ -327,7 +347,6 @@ public class GameScreen implements Screen {
 			}
 			break;
 		case 3:
-			tempFragment = snake.peekFirst();
 			board[(int) tempFragment.x + i][(int) tempFragment.y + j] = 2;
 			snake.offerFirst(new Vector2((int) tempFragment.x + i,
 					(int) tempFragment.y + j));
@@ -336,20 +355,28 @@ public class GameScreen implements Screen {
 			placeApple();
 			break;
 		case 4:
+			if(tempFragment.x + i == 0 || tempFragment.x + i == boardWidth - 1 ){
+				if(tempFragment.x == 1){
+					tempFragment.x = boardWidth - 1;
+				}
+				else{
+					tempFragment.x = 0;
+				}
+				collisionCheck(i, j);
+			}
+			else if(tempFragment.y + j == 0 || tempFragment.y + j == boardHeight - 1){			
+				if(tempFragment.y == 1){
+					tempFragment.y = boardHeight - 1;
+				}
+				else{
+					tempFragment.y = 0;
+				}
+				collisionCheck(i, j);
+			}
 			break;
 		default:
 			break;
 		}
-		if ((int) (score * scoreMultiplier) > highscore) {
-			prefs.putInteger("highscore", (int) (score * scoreMultiplier));
-			highscore = (int) (score * scoreMultiplier);
-			prefs.flush();
-		}
-
-		highscoreLabel.setText("HIGHSCORE: " + highscore);
-		scoreLabel.setText("SCORE: " + (int) (score * scoreMultiplier));
-		lengthLabel.setText("LENGTH: " + (score + 3));
-		multiplierLabel.setText("MULTIPLIER: " + scoreMultiplier);
 	}
 
 	@Override
@@ -380,13 +407,11 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void pause() {
-		System.out.printf("paused game screen\n");
 		isFocused = false;
 	}
 
 	@Override
 	public void resume() {
-		System.out.printf("resumed game screen\n");
 		isFocused = true;
 	}
 
