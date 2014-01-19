@@ -36,14 +36,13 @@ public class GameScreen implements Screen {
 
 	private Texture snakeSegment;
 	private Texture apple;
-	private Texture wall;
 	private Texture options;
 	private Texture levelTexture;
 	private SpriteBatch batch;
 
-	private float elapsedTime;
-	private float lastUpdate;
-	private float speed;
+	private double elapsedTime;
+	private double lastUpdate;
+	private double speed;
 
 	private boolean inProgress;
 	private boolean isFocused;
@@ -84,7 +83,7 @@ public class GameScreen implements Screen {
 		create();
 	}
 
-	public void reset(float speed, float gracePeriod, String level) {
+	public void reset(double speed, float gracePeriod, String level) {
 		elapsedTime = 0.0f;
 		lastUpdate = gracePeriod;
 		this.speed = speed;
@@ -95,7 +94,7 @@ public class GameScreen implements Screen {
 		boardHeight = levelSelector.getLevelHeight();
 		board = levelSelector.getBoard();
 		levelTexture = levelSelector.getLevelTexture();
-		scoreMultiplier = speed / 20.0f * 4;
+		scoreMultiplier = (float)(speed / 20.0 * 4);
 		scoreLabel.setText("SCORE: " + (int) (score * scoreMultiplier));
 		lengthLabel.setText("LENGTH: " + (score + 3));
 		multiplierLabel.setText("MULTIPLIER: " + scoreMultiplier);
@@ -144,7 +143,6 @@ public class GameScreen implements Screen {
 		camera.setToOrtho(false, 1280, 720);
 
 		snakeSegment = new Texture(Gdx.files.internal("data/snake_segment.png"));
-		wall = new Texture(Gdx.files.internal("data/border.png"));
 		apple = new Texture(Gdx.files.internal("data/apple.png"));
 		options = new Texture(Gdx.files.internal("data/ic_action_settings.png"));
 		batch = new SpriteBatch();
@@ -194,7 +192,7 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		delta = Math.min(delta, 0.17f); // a bit higher than 1.0f/60.0f
 		if (this.isFocused == true) {
-			float tickTime = 1 / speed;
+			float tickTime = (float)(1 / speed);
 			elapsedTime += delta;
 			while (lastUpdate < elapsedTime) {
 				if (lastUpdate + tickTime <= elapsedTime) {
@@ -416,7 +414,6 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		snakeSegment.dispose();
 		apple.dispose();
-		wall.dispose();
 		options.dispose();
 		stage.dispose();
 		scoreSound.dispose();
