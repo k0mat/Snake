@@ -33,10 +33,13 @@ public class GameScreen implements Screen {
 	private OrthographicCamera camera;
 
 	private Sound scoreSound;
+	private boolean muted;
 
 	private Texture snakeSegment;
 	private Texture apple;
 	private Texture options;
+	private Texture soundOn;
+	private Texture soundMuted;
 	private Texture levelTexture;
 	private SpriteBatch batch;
 
@@ -63,6 +66,7 @@ public class GameScreen implements Screen {
 
 	private Stage stage;
 	Button optionsButton;
+	Button soundButton;
 	Label scoreLabel;
 	Label lengthLabel;
 	Label multiplierLabel;
@@ -145,16 +149,34 @@ public class GameScreen implements Screen {
 		snakeSegment = new Texture(Gdx.files.internal("data/snake_segment.png"));
 		apple = new Texture(Gdx.files.internal("data/apple.png"));
 		options = new Texture(Gdx.files.internal("data/ic_action_settings.png"));
+		soundOn = new Texture(Gdx.files.internal("data/ic_action_volume_on.png"));
+		soundMuted = new Texture(Gdx.files.internal("data/ic_action_volume_muted.png"));
 		batch = new SpriteBatch();
 
 		scoreSound = Gdx.audio.newSound(Gdx.files.internal("data/score.mp3"));
+		muted = false;
 
 		random = new Random();
 		levelSelector = new LevelSelector();
 
 		ButtonStyle style = new ButtonStyle();
-		Image image = new Image(options);
-		style.up = image.getDrawable();
+		style.up = new Image(options).getDrawable();
+		optionsButton = new Button(style);
+		optionsButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				snakeGame.setScreen(snakeGame.menuScreen);
+			}
+		});
+		
+		ButtonStyle soundStyle = new ButtonStyle();
+		soundStyle.up = new Image(soundOn).getDrawable();
+		soundStyle.checked = new Image(soundMuted).getDrawable();
+		soundButton = new Button(soundStyle);
+		soundButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				muted = !muted;
+			}
+		});
 
 		LabelStyle labelStyle = new LabelStyle(
 				snakeGame.menuScreen.getBitmapFont40(), Color.WHITE);
@@ -163,24 +185,19 @@ public class GameScreen implements Screen {
 		scoreLabel = new Label("SCORE: ", labelStyle);
 		multiplierLabel = new Label("MULTIPLIER: ", labelStyle);
 		lengthLabel = new Label("LENGTH: ", labelStyle);
-		optionsButton = new Button(style);
 
 		int tempX = Gdx.graphics.getWidth() / 8, tempY = Gdx.graphics
 				.getHeight();
 
+		
 		optionsButton.setPosition(Gdx.graphics.getWidth() - 96, tempY - 96);
-
+		soundButton.setPosition(optionsButton.getX(), optionsButton.getY() - 96);
 		lengthLabel.setPosition(tempX * 4, tempY - 58);
 		scoreLabel.setPosition(tempX * 2 + (tempX * 2 / 3), tempY - 58);
 		multiplierLabel.setPosition(tempX * 5 + tempX / 2, tempY - 58);
 		highscoreLabel.setPosition(tempX * 1, tempY - 58);
 
-		optionsButton.addListener(new ClickListener() {
-			public void clicked(InputEvent event, float x, float y) {
-				snakeGame.setScreen(snakeGame.menuScreen);
-			}
-		});
-
+		stage.addActor(soundButton);
 		stage.addActor(highscoreLabel);
 		stage.addActor(scoreLabel);
 		stage.addActor(lengthLabel);
@@ -346,7 +363,9 @@ public class GameScreen implements Screen {
 			snake.offerFirst(new Vector2((int) tempFragment.x + i,
 					(int) tempFragment.y + j));
 			score++;
-			scoreSound.play(1.0f);
+			if(!muted){
+				scoreSound.play(1.0f);
+			}
 			placeApple();
 			break;
 		case 4:
