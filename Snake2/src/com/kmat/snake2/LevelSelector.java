@@ -30,7 +30,7 @@ public class LevelSelector {
 
 	private void nowallsLevel() {
 		levelTexture = nowalls;
-		levelWidth = 30;
+		levelWidth = 31;
 		levelHeight = 21;
 		board = new byte[levelWidth][levelHeight];
 		for (int i = 0; i < levelWidth; i++) {
@@ -46,7 +46,7 @@ public class LevelSelector {
 
 	private void standardLevel() {
 		levelTexture = standard;
-		levelWidth = 30;
+		levelWidth = 31;
 		levelHeight = 21;
 		board = new byte[levelWidth][levelHeight];
 		for (int i = 0; i < levelWidth; i++) {

@@ -222,7 +222,7 @@ public class GameScreen implements Screen {
 
 			int firstX = (int) ((1280 / 32.0f - boardWidth) / 2 * 32);
 			int firstY = (int) ((720 / 32.0f - boardHeight) / 2 * 32);
-			batch.draw(levelTexture, firstX, firstY + 40);
+			batch.draw(levelTexture, firstX + 16, firstY + 40);
 			for (int i = 0; i < boardWidth; i++) {
 				for (int j = 0; j < boardHeight; j++) {
 					switch (board[i][j]) {
