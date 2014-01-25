@@ -65,12 +65,12 @@ public class GameScreen implements Screen {
 	private Vector2 tempFragment;
 
 	private Stage stage;
-	Button optionsButton;
-	Button soundButton;
-	Label scoreLabel;
-	Label lengthLabel;
-	Label multiplierLabel;
-	Label highscoreLabel;
+	private Button optionsButton;
+	private Button soundButton;
+	private Label scoreLabel;
+	private Label lengthLabel;
+	private Label multiplierLabel;
+	private Label highscoreLabel;
 
 	private Preferences prefs;
 	private int highscore;
@@ -402,7 +402,8 @@ public class GameScreen implements Screen {
 		stage.setViewport(width, height, true);
 
 		optionsButton.setPosition(width - 96, height - 96);
-
+		soundButton.setPosition(optionsButton.getX(), optionsButton.getY() - 96);
+		
 		lengthLabel.setPosition(tempX * 4, height - 58);
 		scoreLabel.setPosition(tempX * 2 + (tempX * 2 / 3), height - 58);
 		multiplierLabel.setPosition(tempX * 5 + tempX / 2, height - 58);
