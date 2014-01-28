@@ -98,7 +98,7 @@ public class GameScreen implements Screen {
 		boardHeight = levelSelector.getLevelHeight();
 		board = levelSelector.getBoard();
 		levelTexture = levelSelector.getLevelTexture();
-		scoreMultiplier = (float)(speed / 20.0 * 4);
+		scoreMultiplier = (float)(speed / 20.0 * 4) * levelSelector.getLevelMultiplier();
 		scoreLabel.setText("SCORE: " + (int) (score * scoreMultiplier));
 		lengthLabel.setText("LENGTH: " + (score + 3));
 		multiplierLabel.setText("MULTIPLIER: " + scoreMultiplier);

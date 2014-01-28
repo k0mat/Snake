@@ -11,10 +11,11 @@ public class LevelSelector {
 	private Texture standard;
 	private Texture nowalls;
 	private Texture levelTexture;
+	private float levelMultiplier;
 
 	public LevelSelector() {
 		standard = new Texture(Gdx.files.internal("data/standard.png"));
-		nowalls = new Texture(Gdx.files.internal("data/standard.png"));
+		nowalls = new Texture(Gdx.files.internal("data/nowalls.png"));
 	}
 
 	public void initLevel(String level) {
@@ -29,6 +30,7 @@ public class LevelSelector {
 	}
 
 	private void nowallsLevel() {
+		levelMultiplier = 0.75f;
 		levelTexture = nowalls;
 		levelWidth = 31;
 		levelHeight = 21;
@@ -45,6 +47,7 @@ public class LevelSelector {
 	}
 
 	private void standardLevel() {
+		levelMultiplier = 1.0f;
 		levelTexture = standard;
 		levelWidth = 31;
 		levelHeight = 21;
@@ -83,6 +86,10 @@ public class LevelSelector {
 	public void dispose(){
 		standard.dispose();
 		nowalls.dispose();
+	}
+
+	public float getLevelMultiplier() {
+		return levelMultiplier;
 	}
 
 }
