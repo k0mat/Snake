@@ -148,7 +148,7 @@ public class MenuScreen implements Screen {
 		});
 
 		resumeButton.setPosition(
-				Gdx.graphics.getWidth() / 2 - resumeButton.getWidth() - 10, 50);
+				Gdx.graphics.getWidth() / 2 - 10, 50);
 		startButton.setPosition(resumeButton.getX() - startButton.getWidth()
 				- 10, 50);
 		scoresButton.setPosition(resumeButton.getX() + resumeButton.getWidth()
@@ -175,8 +175,8 @@ public class MenuScreen implements Screen {
 		stage.addActor(diffLabel);
 		stage.addActor(startButton);
 		stage.addActor(resumeButton);
-		stage.addActor(scoresButton);
-		stage.addActor(optionsButton);
+		//stage.addActor(scoresButton);
+		//stage.addActor(optionsButton);
 		stage.addActor(diffSlider);
 	}
 
