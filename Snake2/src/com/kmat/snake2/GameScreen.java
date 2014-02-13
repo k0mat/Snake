@@ -179,7 +179,7 @@ public class GameScreen implements Screen {
 		});
 
 		LabelStyle labelStyle = new LabelStyle(
-				snakeGame.menuScreen.getBitmapFont40(), Color.WHITE);
+				snakeGame.menuScreen.getBitmapTextFont(), Color.WHITE);
 
 		highscoreLabel = new Label("HIGHSCORE: " + highscore, labelStyle);
 		scoreLabel = new Label("SCORE: ", labelStyle);
@@ -192,10 +192,10 @@ public class GameScreen implements Screen {
 		
 		optionsButton.setPosition(Gdx.graphics.getWidth() - 96, tempY - 96);
 		soundButton.setPosition(optionsButton.getX(), optionsButton.getY() - 96);
-		lengthLabel.setPosition(tempX * 4, tempY - 58);
-		scoreLabel.setPosition(tempX * 2 + (tempX * 2 / 3), tempY - 58);
-		multiplierLabel.setPosition(tempX * 5 + tempX / 2, tempY - 58);
-		highscoreLabel.setPosition(tempX * 1, tempY - 58);
+		lengthLabel.setPosition(tempX * 4, tempY - lengthLabel.getHeight());
+		scoreLabel.setPosition(tempX * 2 + (tempX * 2 / 3), tempY - scoreLabel.getHeight());
+		multiplierLabel.setPosition(tempX * 5 + tempX / 2, tempY - multiplierLabel.getHeight());
+		highscoreLabel.setPosition(tempX * 1, tempY - highscoreLabel.getHeight());
 
 		stage.addActor(soundButton);
 		stage.addActor(highscoreLabel);
@@ -404,10 +404,10 @@ public class GameScreen implements Screen {
 		optionsButton.setPosition(width - 96, height - 96);
 		soundButton.setPosition(optionsButton.getX(), optionsButton.getY() - 96);
 		
-		lengthLabel.setPosition(tempX * 4, height - 58);
-		scoreLabel.setPosition(tempX * 2 + (tempX * 2 / 3), height - 58);
-		multiplierLabel.setPosition(tempX * 5 + tempX / 2, height - 58);
-		highscoreLabel.setPosition(tempX * 1, height - 58);
+		lengthLabel.setPosition(tempX * 4, height - lengthLabel.getHeight());
+		scoreLabel.setPosition(tempX * 2 + (tempX * 2 / 3), height - scoreLabel.getHeight());
+		multiplierLabel.setPosition(tempX * 5 + tempX / 2, height - multiplierLabel.getHeight());
+		highscoreLabel.setPosition(tempX * 1, height - highscoreLabel.getHeight());
 
 	}
 

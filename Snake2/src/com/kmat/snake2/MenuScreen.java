@@ -33,7 +33,7 @@ public class MenuScreen implements Screen {
 	private Stage stage;
 	private FreeTypeFontGenerator generator;
 	private BitmapFont bitmapButtonFont;
-	private BitmapFont bitmapFont40;
+	private BitmapFont bitmapTextFont;
 	private TextButtonStyle buttonStyle;
 	private NinePatch ninePatch;
 	private NinePatchDrawable patchDrawable;
@@ -52,20 +52,31 @@ public class MenuScreen implements Screen {
 	}
 
 	private void create() {
+		int width = Gdx.graphics.getWidth();
+		int size = 0;
+		if(width <= 800){
+			size = 25;
+		}
+		else if( width <= 1280){
+			size = 40;
+		}
+		else{
+			size = 55;
+		}
 		stage = new Stage();
 		generator = new FreeTypeFontGenerator(
 				Gdx.files.internal("data/RobotoCondensed-Bold.ttf"));
 		bitmapButtonFont = generator.generateFont(65);
-		bitmapFont40 = generator.generateFont(40);
+		bitmapTextFont = generator.generateFont(size);
 		ninePatch = new NinePatch(new Texture(
-				Gdx.files.internal("data/test.png")), 4, 4, 4, 5);
+				Gdx.files.internal("data/button9.png")), 4, 5, 4, 5);
 		patchDrawable = new NinePatchDrawable(ninePatch);
 		buttonStyle = new TextButtonStyle(patchDrawable, patchDrawable,
 				patchDrawable, bitmapButtonFont);
 		buttonStyle.fontColor = Color.WHITE;
 		buttonStyle.disabledFontColor = Color.GRAY;
 
-		LabelStyle labelStyle = new LabelStyle(bitmapFont40, Color.WHITE);
+		LabelStyle labelStyle = new LabelStyle(bitmapTextFont, Color.WHITE);
 
 		SliderStyle sliderStyle = new SliderStyle();
 		sliderStyle.knob = new Image(new Texture(
@@ -99,12 +110,12 @@ public class MenuScreen implements Screen {
 				Gdx.files.internal("data/knob.png"))).getDrawable();
 		scrollStyle.vScrollKnob = new Image(new Texture(
 				Gdx.files.internal("data/slider2.png"))).getDrawable();
-		listStyle.font = bitmapFont40;
+		listStyle.font = bitmapTextFont;
 		listStyle.selection = new Image(new Texture(bg)).getDrawable();
 		;
 
 		SelectBoxStyle boxStyle = new SelectBoxStyle();
-		boxStyle.font = bitmapFont40;
+		boxStyle.font = bitmapTextFont;
 		boxStyle.listStyle = listStyle;
 		boxStyle.scrollStyle = scrollStyle;
 		boxStyle.background = new Image(new Texture(bg)).getDrawable();
@@ -114,7 +125,7 @@ public class MenuScreen implements Screen {
 				boxStyle);
 		levelSelect.setPosition(
 				Gdx.graphics.getWidth() / 2 - levelSelect.getWidth() / 2,
-				Gdx.graphics.getHeight() / 2 - 100);
+				diffSlider.getY() - diffSlider.getHeight() * 3);
 
 		startButton = new TextButton("  START  ", buttonStyle);
 		startButton.addListener(new ClickListener() {
@@ -164,11 +175,11 @@ public class MenuScreen implements Screen {
 				labelStyle);
 		diffLabel.setPosition(
 				Gdx.graphics.getWidth() / 2 - diffLabel.getWidth() / 2,
-				Gdx.graphics.getHeight() / 2 + 120 + diffLabel.getHeight());
+				diffSlider.getY() + diffSlider.getHeight());
 		levelLabel = new Label("Choose a level", labelStyle);
 		levelLabel.setPosition(
 				Gdx.graphics.getWidth() / 2 - levelLabel.getWidth() / 2,
-				Gdx.graphics.getHeight() / 2 - 80 + levelLabel.getHeight());
+				levelSelect.getY() + levelSelect.getHeight());
 
 		stage.addActor(levelLabel);
 		stage.addActor(levelSelect);
@@ -233,8 +244,8 @@ public class MenuScreen implements Screen {
 		return bitmapButtonFont;
 	}
 
-	public BitmapFont getBitmapFont40() {
-		return bitmapFont40;
+	public BitmapFont getBitmapTextFont() {
+		return bitmapTextFont;
 	}
 
 }

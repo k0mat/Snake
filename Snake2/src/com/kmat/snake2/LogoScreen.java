@@ -24,7 +24,7 @@ public class LogoScreen implements Screen {
 	public void render(float delta) {
 		stage.act(delta);
 		time += delta;
-		if (time > 3.0f) {
+		if (time >= 2.0f) {
 			snakeGame.setScreen(snakeGame.menuScreen);
 		}
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
