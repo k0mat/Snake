@@ -54,10 +54,10 @@ public class GameScreen implements Screen {
 	private int secondChance;
 	private int boardWidth;
 	private int boardHeight;
-	private byte board[][];
+	private Tile[][] board;
 	private Random random;
-	public Direction direction;
-	public int side;
+	public Direction snakeDirection;
+	public Key lastPressedKey;
 	private int score;
 	private float scoreMultiplier;
 
@@ -74,10 +74,6 @@ public class GameScreen implements Screen {
 
 	private Preferences prefs;
 	private int highscore;
-
-	public enum Direction {
-		NORTH, EAST, SOUTH, WEST
-	}
 
 	public GameScreen(SnakeGame snakeGame) {
 		this.snakeGame = snakeGame;
@@ -115,16 +111,16 @@ public class GameScreen implements Screen {
 		do {
 			i = random.nextInt(boardWidth - 2) + 1;
 			j = random.nextInt(boardHeight - 2) + 1;
-		} while (board[i][j] != 0);
-		board[i][j] = 3;
+		} while (board[i][j] != Tile.EMPTY);
+		board[i][j] = Tile.APPLE;
 	}
 
 	private void placeSnake() {
-		board[boardWidth / 2 - 1][boardHeight / 2] = 2;
-		board[boardWidth / 2][boardHeight / 2] = 2;
-		board[boardWidth / 2 + 1][boardHeight / 2] = 2;
-		direction = Direction.WEST;
-		side = 0;
+		board[boardWidth / 2 - 1][boardHeight / 2] = Tile.SNAKE;
+		board[boardWidth / 2][boardHeight / 2] = Tile.SNAKE;
+		board[boardWidth / 2 + 1][boardHeight / 2] = Tile.SNAKE;
+		snakeDirection = Direction.WEST;
+		lastPressedKey = Key.NONE;
 		snake = new ArrayDeque<Vector2>();
 		snake.offerFirst(new Vector2((boardWidth / 2 + 1), (boardHeight / 2)));
 		snake.offerFirst(new Vector2((boardWidth / 2), (boardHeight / 2)));
@@ -241,17 +237,17 @@ public class GameScreen implements Screen {
 			for (int i = 0; i < boardWidth; i++) {
 				for (int j = 0; j < boardHeight; j++) {
 					switch (board[i][j]) {
-					case 1:
+					case WALL:
 						break;
-					case 2:
+					case SNAKE:
 						batch.draw(snakeSegment, firstX + i * 32, firstY
 								+ (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
-					case 3:
+					case APPLE:
 						batch.draw(apple, firstX + i * 32, firstY
 								+ (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
-					case 4:
+					case WARPWALL:
 						break;
 					default:
 						break;
@@ -268,50 +264,50 @@ public class GameScreen implements Screen {
 	}
 
 	private void proceed() {
-		if (side == 1) {
-			if (direction == GameScreen.Direction.NORTH)
-				direction = GameScreen.Direction.WEST;
-			else if (direction == GameScreen.Direction.WEST)
-				direction = GameScreen.Direction.SOUTH;
-			else if (direction == GameScreen.Direction.SOUTH)
-				direction = GameScreen.Direction.EAST;
-			else if (direction == GameScreen.Direction.EAST)
-				direction = GameScreen.Direction.NORTH;
-		} else if (side == 2) {
-			if (direction == GameScreen.Direction.NORTH)
-				direction = GameScreen.Direction.EAST;
-			else if (direction == GameScreen.Direction.EAST)
-				direction = GameScreen.Direction.SOUTH;
-			else if (direction == GameScreen.Direction.SOUTH)
-				direction = GameScreen.Direction.WEST;
-			else if (direction == GameScreen.Direction.WEST)
-				direction = GameScreen.Direction.NORTH;
-		} else if (side == 3) {
-			if (direction != GameScreen.Direction.EAST)
-				direction = GameScreen.Direction.WEST;
-		} else if (side == 4) {
-			if (direction != GameScreen.Direction.WEST)
-				direction = GameScreen.Direction.EAST;
-		} else if (side == 5) {
-			if (direction != GameScreen.Direction.SOUTH)
-				direction = GameScreen.Direction.NORTH;
-		} else if (side == 6) {
-			if (direction != GameScreen.Direction.NORTH)
-				direction = GameScreen.Direction.SOUTH;
+		if (lastPressedKey == Key.LEFTPRESS) {
+			if (snakeDirection == Direction.NORTH)
+				snakeDirection = Direction.WEST;
+			else if (snakeDirection == Direction.WEST)
+				snakeDirection = Direction.SOUTH;
+			else if (snakeDirection == Direction.SOUTH)
+				snakeDirection = Direction.EAST;
+			else if (snakeDirection == Direction.EAST)
+				snakeDirection = Direction.NORTH;
+		} else if (lastPressedKey == Key.RIGHTPRESS) {
+			if (snakeDirection == Direction.NORTH)
+				snakeDirection = Direction.EAST;
+			else if (snakeDirection == Direction.EAST)
+				snakeDirection = Direction.SOUTH;
+			else if (snakeDirection == Direction.SOUTH)
+				snakeDirection = Direction.WEST;
+			else if (snakeDirection == Direction.WEST)
+				snakeDirection = Direction.NORTH;
+		} else if (lastPressedKey == Key.LEFT) {
+			if (snakeDirection != Direction.EAST)
+				snakeDirection = Direction.WEST;
+		} else if (lastPressedKey == Key.RIGHT) {
+			if (snakeDirection != Direction.WEST)
+				snakeDirection = Direction.EAST;
+		} else if (lastPressedKey == Key.UP) {
+			if (snakeDirection != Direction.SOUTH)
+				snakeDirection = Direction.NORTH;
+		} else if (lastPressedKey == Key.DOWN) {
+			if (snakeDirection != Direction.NORTH)
+				snakeDirection = Direction.SOUTH;
 		}
-		side = 0;
+		lastPressedKey = Key.NONE;
 
 		int i = 0, j = 0;
-		if (direction == GameScreen.Direction.NORTH) {
+		if (snakeDirection == Direction.NORTH) {
 			i = 0;
 			j = 1;
-		} else if (direction == GameScreen.Direction.WEST) {
+		} else if (snakeDirection == Direction.WEST) {
 			i = -1;
 			j = 0;
-		} else if (direction == GameScreen.Direction.SOUTH) {
+		} else if (snakeDirection == Direction.SOUTH) {
 			i = 0;
 			j = -1;
-		} else if (direction == GameScreen.Direction.EAST) {
+		} else if (snakeDirection == Direction.EAST) {
 			i = 1;
 			j = 0;
 		}
@@ -334,14 +330,14 @@ public class GameScreen implements Screen {
 
 	private void collisionCheck(int i, int j) {
 		switch (board[(int) tempFragment.x + i][(int) tempFragment.y + j]) {
-		case 0:
-			board[(int) tempFragment.x + i][(int) tempFragment.y + j] = 2;
+		case EMPTY:
+			board[(int) tempFragment.x + i][(int) tempFragment.y + j] = Tile.SNAKE;
 			snake.offerFirst(new Vector2((int) tempFragment.x + i,
 					(int) tempFragment.y + j));
 			tempFragment = snake.pollLast();
-			board[(int) tempFragment.x][(int) tempFragment.y] = 0;
+			board[(int) tempFragment.x][(int) tempFragment.y] = Tile.EMPTY;
 			break;
-		case 1:
+		case WALL:
 
 			if (this.secondChance >= 2) {
 				this.secondChance = 0;
@@ -350,7 +346,7 @@ public class GameScreen implements Screen {
 				reset(speed, 1.0f, levelSelector.getLevel());
 			}
 			break;
-		case 2:
+		case SNAKE:
 			if (this.secondChance >= 2) {
 				this.secondChance = 0;
 			} else {
@@ -358,8 +354,8 @@ public class GameScreen implements Screen {
 				reset(speed, 1.0f, levelSelector.getLevel());
 			}
 			break;
-		case 3:
-			board[(int) tempFragment.x + i][(int) tempFragment.y + j] = 2;
+		case APPLE:
+			board[(int) tempFragment.x + i][(int) tempFragment.y + j] = Tile.SNAKE;
 			snake.offerFirst(new Vector2((int) tempFragment.x + i,
 					(int) tempFragment.y + j));
 			score++;
@@ -368,7 +364,7 @@ public class GameScreen implements Screen {
 			}
 			placeApple();
 			break;
-		case 4:
+		case WARPWALL:
 			if(tempFragment.x + i == 0 || tempFragment.x + i == boardWidth - 1 ){
 				if(tempFragment.x == 1){
 					tempFragment.x = boardWidth - 1;
@@ -442,6 +438,11 @@ public class GameScreen implements Screen {
 
 	public boolean isInProgress() {
 		return inProgress;
+	}
+
+	public void setLastPressedKey(Key key) {
+		this.lastPressedKey = key;
+		
 	}
 
 }

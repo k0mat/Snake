@@ -201,7 +201,29 @@ public class MenuScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		// stage.setViewport(width, height, true);
+		stage.setViewport(width, height, true);
+		resumeButton.setPosition(
+				width / 2 - 10, 50);
+		diffSlider.setPosition(
+				width / 2 - diffSlider.getWidth() / 2,
+				Gdx.graphics.getHeight() / 2 + 100);
+		levelSelect.setPosition(
+				Gdx.graphics.getWidth() / 2 - levelSelect.getWidth() / 2,
+				diffSlider.getY() - diffSlider.getHeight() * 3);
+		
+		startButton.setPosition(resumeButton.getX() - startButton.getWidth()
+				- 10, 50);
+		scoresButton.setPosition(resumeButton.getX() + resumeButton.getWidth()
+				+ 10, 50);
+		optionsButton.setPosition(scoresButton.getX() + scoresButton.getWidth()
+				+ 10, 50);
+		
+		diffLabel.setPosition(
+				width / 2 - diffLabel.getWidth() / 2,
+				diffSlider.getY() + diffSlider.getHeight());
+		levelLabel.setPosition(
+				width / 2 - levelLabel.getWidth() / 2,
+				levelSelect.getY() + levelSelect.getHeight());
 
 	}
 

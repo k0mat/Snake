@@ -12,16 +12,20 @@ public class GameInputProcessor implements InputProcessor {
 	public boolean keyDown(int keycode) {
 		if (game.isInProgress()) {
 			if (keycode == Input.Keys.A) {
-				game.side = 3;
+				game.setLastPressedKey(Key.LEFT);
+				//game.lastPressedKey = 3;
 				return true;
 			} else if (keycode == Input.Keys.D) {
-				game.side = 4;
+				game.setLastPressedKey(Key.RIGHT);
+				//game.lastPressedKey = 4;
 				return true;
 			} else if (keycode == Input.Keys.W) {
-				game.side = 5;
+				game.setLastPressedKey(Key.UP);
+				//game.lastPressedKey = 5;
 				return true;
 			} else if (keycode == Input.Keys.S) {
-				game.side = 6;
+				game.setLastPressedKey(Key.DOWN);
+				//game.lastPressedKey = 6;
 				return true;
 			} else
 				return false;
@@ -31,13 +35,11 @@ public class GameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -45,9 +47,11 @@ public class GameInputProcessor implements InputProcessor {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (game.isInProgress()) {
 			if (screenX < width / 2) {
-				game.side = 1;
+				game.setLastPressedKey(Key.LEFTPRESS);
+				//game.lastPressedKey = 1;
 			} else {
-				game.side = 2;
+				game.setLastPressedKey(Key.RIGHTPRESS);
+				//game.lastPressedKey = 2;
 
 			}
 			return true;
@@ -57,25 +61,21 @@ public class GameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -7,7 +7,7 @@ public class LevelSelector {
 	private int levelWidth;
 	private int levelHeight;
 	private String level;
-	private byte board[][];
+	private Tile[][] board;
 	private Texture standard;
 	private Texture nowalls;
 	private Texture levelTexture;
@@ -34,14 +34,14 @@ public class LevelSelector {
 		levelTexture = nowalls;
 		levelWidth = 31;
 		levelHeight = 21;
-		board = new byte[levelWidth][levelHeight];
+		board = new Tile[levelWidth][levelHeight];
 		for (int i = 0; i < levelWidth; i++) {
 			for (int j = 0; j < levelHeight; j++) {
 				if (i == 0 || i == (levelWidth - 1) || j == 0
 						|| j == (levelHeight - 1))
-					board[i][j] = 4;
+					board[i][j] = Tile.WARPWALL;
 				else
-					board[i][j] = 0;
+					board[i][j] = Tile.EMPTY;
 			}
 		}
 	}
@@ -51,14 +51,14 @@ public class LevelSelector {
 		levelTexture = standard;
 		levelWidth = 31;
 		levelHeight = 21;
-		board = new byte[levelWidth][levelHeight];
+		board = new Tile[levelWidth][levelHeight];
 		for (int i = 0; i < levelWidth; i++) {
 			for (int j = 0; j < levelHeight; j++) {
 				if (i == 0 || i == (levelWidth - 1) || j == 0
 						|| j == (levelHeight - 1))
-					board[i][j] = 1;
+					board[i][j] = Tile.WALL;
 				else
-					board[i][j] = 0;
+					board[i][j] = Tile.EMPTY;
 			}
 		}
 	}
@@ -71,7 +71,7 @@ public class LevelSelector {
 		return levelHeight;
 	}
 
-	public byte[][] getBoard() {
+	public Tile[][] getBoard() {
 		return board;
 	}
 
