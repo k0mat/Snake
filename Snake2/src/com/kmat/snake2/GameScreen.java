@@ -94,7 +94,7 @@ public class GameScreen implements Screen {
 		boardHeight = levelSelector.getLevelHeight();
 		board = levelSelector.getBoard();
 		levelTexture = levelSelector.getLevelTexture();
-		scoreMultiplier = (float)(speed / 20.0 * 4) * levelSelector.getLevelMultiplier();
+		scoreMultiplier = (float) (speed / 20.0 * 4) * levelSelector.getLevelMultiplier();
 		scoreLabel.setText("SCORE: " + (int) (score * scoreMultiplier));
 		lengthLabel.setText("LENGTH: " + (score + 3));
 		multiplierLabel.setText("MULTIPLIER: " + scoreMultiplier);
@@ -131,8 +131,7 @@ public class GameScreen implements Screen {
 		prefs = Gdx.app.getPreferences("Snake Preferences");
 		highscore = prefs.getInteger("highscore", 0);
 
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
-				true);
+		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		gameInputProcessor = new GameInputProcessor();
 		gameInputProcessor.setGame(this);
 		inputMultiplexer = new InputMultiplexer();
@@ -163,7 +162,7 @@ public class GameScreen implements Screen {
 				snakeGame.setScreen(snakeGame.menuScreen);
 			}
 		});
-		
+
 		ButtonStyle soundStyle = new ButtonStyle();
 		soundStyle.up = new Image(soundOn).getDrawable();
 		soundStyle.checked = new Image(soundMuted).getDrawable();
@@ -174,18 +173,15 @@ public class GameScreen implements Screen {
 			}
 		});
 
-		LabelStyle labelStyle = new LabelStyle(
-				snakeGame.menuScreen.getBitmapTextFont(), Color.WHITE);
+		LabelStyle labelStyle = new LabelStyle(snakeGame.menuScreen.getBitmapTextFont(), Color.WHITE);
 
 		highscoreLabel = new Label("HIGHSCORE: " + highscore, labelStyle);
 		scoreLabel = new Label("SCORE: ", labelStyle);
 		multiplierLabel = new Label("MULTIPLIER: ", labelStyle);
 		lengthLabel = new Label("LENGTH: ", labelStyle);
 
-		int tempX = Gdx.graphics.getWidth() / 8, tempY = Gdx.graphics
-				.getHeight();
+		int tempX = Gdx.graphics.getWidth() / 8, tempY = Gdx.graphics.getHeight();
 
-		
 		optionsButton.setPosition(Gdx.graphics.getWidth() - 96, tempY - 96);
 		soundButton.setPosition(optionsButton.getX(), optionsButton.getY() - 96);
 		lengthLabel.setPosition(tempX * 4, tempY - lengthLabel.getHeight());
@@ -205,7 +201,7 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		delta = Math.min(delta, 0.17f); // a bit higher than 1.0f/60.0f
 		if (this.isFocused == true) {
-			float tickTime = (float)(1 / speed);
+			float tickTime = (float) (1 / speed);
 			elapsedTime += delta;
 			while (lastUpdate < elapsedTime) {
 				if (lastUpdate + tickTime <= elapsedTime) {
@@ -240,12 +236,10 @@ public class GameScreen implements Screen {
 					case WALL:
 						break;
 					case SNAKE:
-						batch.draw(snakeSegment, firstX + i * 32, firstY
-								+ (boardHeight - 1) * 32 - j * 32 + 25);
+						batch.draw(snakeSegment, firstX + i * 32, firstY + (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
 					case APPLE:
-						batch.draw(apple, firstX + i * 32, firstY
-								+ (boardHeight - 1) * 32 - j * 32 + 25);
+						batch.draw(apple, firstX + i * 32, firstY + (boardHeight - 1) * 32 - j * 32 + 25);
 						break;
 					case WARPWALL:
 						break;
@@ -312,10 +306,9 @@ public class GameScreen implements Screen {
 			j = 0;
 		}
 
-		
 		tempFragment = new Vector2(snake.peekFirst().x, snake.peekFirst().y);
 		collisionCheck(i, j);
-		
+
 		if ((int) (score * scoreMultiplier) > highscore) {
 			prefs.putInteger("highscore", (int) (score * scoreMultiplier));
 			highscore = (int) (score * scoreMultiplier);
@@ -332,8 +325,7 @@ public class GameScreen implements Screen {
 		switch (board[(int) tempFragment.x + i][(int) tempFragment.y + j]) {
 		case EMPTY:
 			board[(int) tempFragment.x + i][(int) tempFragment.y + j] = Tile.SNAKE;
-			snake.offerFirst(new Vector2((int) tempFragment.x + i,
-					(int) tempFragment.y + j));
+			snake.offerFirst(new Vector2((int) tempFragment.x + i, (int) tempFragment.y + j));
 			tempFragment = snake.pollLast();
 			board[(int) tempFragment.x][(int) tempFragment.y] = Tile.EMPTY;
 			break;
@@ -356,29 +348,25 @@ public class GameScreen implements Screen {
 			break;
 		case APPLE:
 			board[(int) tempFragment.x + i][(int) tempFragment.y + j] = Tile.SNAKE;
-			snake.offerFirst(new Vector2((int) tempFragment.x + i,
-					(int) tempFragment.y + j));
+			snake.offerFirst(new Vector2((int) tempFragment.x + i, (int) tempFragment.y + j));
 			score++;
-			if(!muted){
+			if (!muted) {
 				scoreSound.play(1.0f);
 			}
 			placeApple();
 			break;
 		case WARPWALL:
-			if(tempFragment.x + i == 0 || tempFragment.x + i == boardWidth - 1 ){
-				if(tempFragment.x == 1){
+			if (tempFragment.x + i == 0 || tempFragment.x + i == boardWidth - 1) {
+				if (tempFragment.x == 1) {
 					tempFragment.x = boardWidth - 1;
-				}
-				else{
+				} else {
 					tempFragment.x = 0;
 				}
 				collisionCheck(i, j);
-			}
-			else if(tempFragment.y + j == 0 || tempFragment.y + j == boardHeight - 1){			
-				if(tempFragment.y == 1){
+			} else if (tempFragment.y + j == 0 || tempFragment.y + j == boardHeight - 1) {
+				if (tempFragment.y == 1) {
 					tempFragment.y = boardHeight - 1;
-				}
-				else{
+				} else {
 					tempFragment.y = 0;
 				}
 				collisionCheck(i, j);
@@ -399,7 +387,7 @@ public class GameScreen implements Screen {
 
 		optionsButton.setPosition(width - 96, height - 96);
 		soundButton.setPosition(optionsButton.getX(), optionsButton.getY() - 96);
-		
+
 		lengthLabel.setPosition(tempX * 4, height - lengthLabel.getHeight());
 		scoreLabel.setPosition(tempX * 2 + (tempX * 2 / 3), height - scoreLabel.getHeight());
 		multiplierLabel.setPosition(tempX * 5 + tempX / 2, height - multiplierLabel.getHeight());
@@ -442,7 +430,7 @@ public class GameScreen implements Screen {
 
 	public void setLastPressedKey(Key key) {
 		this.lastPressedKey = key;
-		
+
 	}
 
 }

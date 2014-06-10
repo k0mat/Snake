@@ -13,19 +13,15 @@ public class GameInputProcessor implements InputProcessor {
 		if (game.isInProgress()) {
 			if (keycode == Input.Keys.A) {
 				game.setLastPressedKey(Key.LEFT);
-				//game.lastPressedKey = 3;
 				return true;
 			} else if (keycode == Input.Keys.D) {
 				game.setLastPressedKey(Key.RIGHT);
-				//game.lastPressedKey = 4;
 				return true;
 			} else if (keycode == Input.Keys.W) {
 				game.setLastPressedKey(Key.UP);
-				//game.lastPressedKey = 5;
 				return true;
 			} else if (keycode == Input.Keys.S) {
 				game.setLastPressedKey(Key.DOWN);
-				//game.lastPressedKey = 6;
 				return true;
 			} else
 				return false;
@@ -48,10 +44,8 @@ public class GameInputProcessor implements InputProcessor {
 		if (game.isInProgress()) {
 			if (screenX < width / 2) {
 				game.setLastPressedKey(Key.LEFTPRESS);
-				//game.lastPressedKey = 1;
 			} else {
 				game.setLastPressedKey(Key.RIGHTPRESS);
-				//game.lastPressedKey = 2;
 
 			}
 			return true;
